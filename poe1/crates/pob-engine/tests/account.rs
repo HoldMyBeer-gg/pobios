@@ -18,8 +18,11 @@ const SAMPLE: &str = include_str!("fixtures/sample-character.json");
 #[serial_test::serial]
 fn the_tree_import_matches_pobs_own_spec() {
     let engine = Engine::new(&pob_src()).expect("engine boot");
-    engine.load_build_xml(WINTER_ORB).expect("load build");
-    assert_eq!(engine.info().unwrap().class, "Witch");
+    // PoB's spec imports into a fresh build (its before_each is newBuild()).
+    // Importing over a loaded build is not the same: on the 3.30 tree, stock
+    // PoB itself allocates 25 notables over the 3.29 Winter Orb build but 29
+    // into a new one, so the spec's numbers only hold for its own setup.
+    engine.eval::<()>("newBuild()").expect("new build");
 
     engine.import_character_tree(SAMPLE, true).expect("import tree");
 
