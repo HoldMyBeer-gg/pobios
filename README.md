@@ -8,6 +8,25 @@ interface built for touch, with the passive tree drawn on Metal. The numbers
 are PoB's numbers: the test suite checks the engine against stats PoB itself
 records.
 
+Website: [pob.holdmybeer.gg](https://pob.holdmybeer.gg)
+
+![The passive tree in pobios on iPad](https://pob.holdmybeer.gg/media/tree.webp)
+
+<table>
+  <tr>
+    <td width="50%"><img src="https://pob.holdmybeer.gg/media/builds.webp" alt="Build library"><br><b>Builds</b>: DPS, EHP and level on every card</td>
+    <td width="50%"><img src="https://pob.holdmybeer.gg/media/skills.webp" alt="Skills"><br><b>Skills</b>: socket groups, gems, supports</td>
+  </tr>
+  <tr>
+    <td><img src="https://pob.holdmybeer.gg/media/items.webp" alt="Items"><br><b>Items</b>: tooltips, compare, weighted trade search</td>
+    <td><img src="https://pob.holdmybeer.gg/media/calcs.webp" alt="Calcs"><br><b>Calcs</b>: PoB's full breakdown</td>
+  </tr>
+  <tr>
+    <td><img src="https://pob.holdmybeer.gg/media/timeless.webp" alt="Timeless jewel finder"><br><b>Timeless jewels</b>: PoB's seed search, with trade links</td>
+    <td><img src="https://pob.holdmybeer.gg/media/tree-detail.webp" alt="Passive tree close-up"><br><b>Tree</b>: Metal, the game's own art, jewel radii</td>
+  </tr>
+</table>
+
 Two apps live side by side, one per game:
 
 - `poe1/`: Path of Exile 1. The mature app. See `poe1/CLAUDE.md` for layout.
