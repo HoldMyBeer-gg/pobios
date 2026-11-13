@@ -394,11 +394,68 @@ struct FlowRow: Layout {
 /// the standard iPad idiom for a toolbar too wide for a narrow (portrait)
 /// screen. On a wide screen the row is shorter than the viewport and does
 /// not scroll, so it looks identical to a plain `HStack`.
+///
+/// A row that scrolls sideways gives no hint of what is past its edge, so
+/// each edge with more content behind it fades out and carries a chevron;
+/// both go away once that end is reached.
 struct HScrollRow<Content: View>: View {
     var content: Content
     init(@ViewBuilder content: () -> Content) { self.content = content() }
+    @State private var edges = ScrollEdges()
+
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
+            content
+        }
+        .modifier(TrackScrollEdges(edges: $edges))
+        .mask {
+            HStack(spacing: 0) {
+                LinearGradient(colors: [.clear, .black], startPoint: .leading, endPoint: .trailing)
+                    .frame(width: edges.moreBefore ? Self.fade : 0)
+                Rectangle()
+                LinearGradient(colors: [.black, .clear], startPoint: .leading, endPoint: .trailing)
+                    .frame(width: edges.moreAfter ? Self.fade : 0)
+            }
+        }
+        .overlay(alignment: .leading) { chevron("chevron.left", shown: edges.moreBefore) }
+        .overlay(alignment: .trailing) { chevron("chevron.right", shown: edges.moreAfter) }
+        .animation(.easeOut(duration: 0.15), value: edges)
+    }
+
+    private static var fade: CGFloat { 44 }
+
+    private func chevron(_ name: String, shown: Bool) -> some View {
+        Image(systemName: name)
+            .font(.system(size: 13, weight: .bold))
+            .foregroundStyle(Tok.textSecondary)
+            .padding(.horizontal, 4)
+            .opacity(shown ? 1 : 0)
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
+    }
+}
+
+/// Whether a horizontal scroll view has content past either edge.
+struct ScrollEdges: Equatable {
+    var moreBefore = false
+    var moreAfter = false
+}
+
+private struct TrackScrollEdges: ViewModifier {
+    @Binding var edges: ScrollEdges
+    func body(content: Content) -> some View {
+        if #available(iOS 18.0, *) {
+            content.onScrollGeometryChange(for: ScrollEdges.self) { g in
+                let x = g.contentOffset.x + g.contentInsets.leading
+                return ScrollEdges(
+                    moreBefore: x > 1,
+                    moreAfter: x + g.containerSize.width < g.contentSize.width - 1
+                )
+            } action: { _, new in
+                edges = new
+            }
+        } else {
+            // iOS 17 has no scroll geometry: no hint, as before.
             content
         }
     }
