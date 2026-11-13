@@ -1,0 +1,9 @@
+:root{
+  --space-0:0;--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;
+  --space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;
+  --gutter:var(--space-5);--stack-tight:var(--space-2);--stack:var(--space-3);--stack-loose:var(--space-6);
+  --radius-none:0;--radius-sm:3px;--radius-md:5px;--radius-lg:8px;--radius-full:999px;
+  --border-width:1px;--border-width-strong:2px;
+  --touch-min:44px;--touch:52px;--touch-lg:60px;
+  --app-max:430px;--appbar-h:56px;--tabbar-h:58px;--safe-bottom:24px;
+}

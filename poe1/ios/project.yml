@@ -1,0 +1,110 @@
+name: PoB
+options:
+  bundleIdPrefix: com.pobios
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    MARKETING_VERSION: "0.1"
+    CURRENT_PROJECT_VERSION: "1"
+    SWIFT_VERSION: "5.0"
+    # Cargo writes to ../target, which the sandbox blocks. On by default
+    # since Xcode 15, and the most common reason a Rust build phase fails.
+    ENABLE_USER_SCRIPT_SANDBOXING: NO
+targets:
+  PoB:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: PoB
+        excludes:
+          - "Resources/**"
+      - path: PoB/Resources
+        buildPhase: resources
+      # Upstream PoB, cloned into the repo root (see scripts/fetch-pob.sh).
+      # Folder references, not groups: PoB resolves modules by relative path,
+      # so the nesting has to survive into the bundle.
+      - path: ../PathOfBuilding/src
+        type: folder
+        buildPhase: resources
+      - path: ../PathOfBuilding/runtime
+        type: folder
+        buildPhase: resources
+      # PoB's version and licence, shown on the About screen.
+      - path: ../PathOfBuilding/manifest.xml
+        buildPhase: resources
+      - path: ../PathOfBuilding/LICENSE.md
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.pobios.app
+        PRODUCT_NAME: PoB
+        INFOPLIST_FILE: PoB/Info.plist
+        # iPad only. A desktop-class tool that does not belong on a phone.
+        TARGETED_DEVICE_FAMILY: "2"
+        CODE_SIGN_STYLE: Automatic
+        # Your Apple team, from the environment: export POBIOS_TEAM=XXXXXXXXXX
+        DEVELOPMENT_TEAM: ${POBIOS_TEAM}
+        SUPPORTS_MACCATALYST: NO
+        # The Rust staticlibs. The phase below builds them wherever cargo
+        # keeps its target dir (a global config may send it to another
+        # disk) and links them into build/rust, which is the one place this
+        # setting can name. Per SDK: device and simulator are both arm64, so
+        # one fat binary cannot tell them apart. Cargo's profile dir is
+        # lowercase.
+        LIBRARY_SEARCH_PATHS[sdk=iphoneos*][config=Debug]: "$(SRCROOT)/build/rust/aarch64-apple-ios/debug"
+        LIBRARY_SEARCH_PATHS[sdk=iphoneos*][config=Release]: "$(SRCROOT)/build/rust/aarch64-apple-ios/release"
+        LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*][config=Debug]: "$(SRCROOT)/build/rust/aarch64-apple-ios-sim/debug"
+        LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*][config=Release]: "$(SRCROOT)/build/rust/aarch64-apple-ios-sim/release"
+        OTHER_LDFLAGS: "-lpobng_ios -lpobng_ffi"
+        SWIFT_OBJC_BRIDGING_HEADER: PoB/PoB-Bridging-Header.h
+    dependencies:
+      - sdk: Metal.framework
+      - sdk: MetalKit.framework
+      - sdk: QuartzCore.framework
+    preBuildScripts:
+      - name: Build Rust
+        # TARGET_SYS=iOS is what makes LuaJIT cross-compile; see docs/IOS.md.
+        # Xcode build phases do not source a login shell, so cargo needs
+        # putting on PATH by hand.
+        script: |
+          # /usr/bin first: Xcode puts its toolchain's clang ahead of the
+          # /usr/bin shim, and that clang has no default sysroot, so LuaJIT's
+          # host tools (built with plain `cc`) cannot find <stdio.h>.
+          export PATH="/usr/bin:$HOME/.cargo/bin:/opt/homebrew/bin:$PATH"
+          cd "$SRCROOT/.."
+          # Xcode exports SDKROOT and deployment targets for the iOS build.
+          # cc-rs picks them up for host build scripts too, so mlua-sys tries
+          # to compile its host-side LuaJIT tools against the iOS SDK and the
+          # kernel refuses to run them (`Killed: 9`). Clear them; cargo still
+          # passes the right flags for the iOS target via --target.
+          unset SDKROOT IPHONEOS_DEPLOYMENT_TARGET MACOSX_DEPLOYMENT_TARGET CPATH LIBRARY_PATH
+          # A macOS sysroot for the host-side compiles. cc-rs ignores it for
+          # the iOS target, which keeps using the iPhoneOS SDK via --target.
+          export SDKROOT="$(/usr/bin/xcrun --sdk macosx --show-sdk-path)"
+          if [ "$PLATFORM_NAME" = "iphonesimulator" ]; then
+            RUST_TARGET=aarch64-apple-ios-sim
+          else
+            RUST_TARGET=aarch64-apple-ios
+          fi
+          PROFILE_FLAG=""; PROFILE_DIR=debug
+          if [ "$CONFIGURATION" = "Release" ]; then PROFILE_FLAG="--release"; PROFILE_DIR=release; fi
+          TARGET_SYS=iOS cargo build -p pobng-ios -p pobng-ffi --target "$RUST_TARGET" $PROFILE_FLAG
+          # Where cargo put them: asked, not assumed, since a global config
+          # may keep the target dir on another disk. Linked into build/rust
+          # so the library search paths above have a fixed place to look.
+          TARGET_DIR="$(cargo metadata --format-version 1 --no-deps | /usr/bin/python3 -c 'import json,sys; print(json.load(sys.stdin)["target_directory"])')"
+          LIB_DIR="$TARGET_DIR/$RUST_TARGET/$PROFILE_DIR"
+          LINK_DIR="$SRCROOT/build/rust/$RUST_TARGET/$PROFILE_DIR"
+          mkdir -p "$LINK_DIR"
+          ln -sfn "$LIB_DIR/libpobng_ios.a" "$LINK_DIR/libpobng_ios.a"
+          ln -sfn "$LIB_DIR/libpobng_ffi.a" "$LINK_DIR/libpobng_ffi.a"
+          # Swift bindings regenerated from the library just built, so they
+          # cannot drift from the Rust they describe.
+          cargo run -q -p pobng-ffi --bin uniffi-bindgen -- generate \
+            --library "$LIB_DIR/libpobng_ffi.a" \
+            --language swift \
+            --out-dir "$SRCROOT/PoB/Generated"
+        basedOnDependencyAnalysis: false

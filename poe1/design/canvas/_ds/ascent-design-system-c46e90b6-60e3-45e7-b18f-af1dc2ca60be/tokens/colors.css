@@ -1,0 +1,28 @@
+:root{
+  --ink-000:#05090F;--ink-050:#08101C;--ink-100:#0B1420;--ink-200:#0D1523;
+  --ink-300:#101828;--ink-400:#162032;--ink-500:#1A2438;--ink-600:#26334D;
+  --cyan-200:#CDF1FF;--cyan-300:#9BE3FF;--cyan-400:#7DDAFF;--cyan-500:#3EC8FF;
+  --cyan-600:#1C9FD6;--cyan-700:#14607F;--cyan-800:#0B2634;
+  --ice-300:#F4F7FC;--ice-400:#DFE7F5;--ice-500:#CDD8EC;--ice-600:#8A99B8;--ice-700:#5B6B8A;--ice-800:#1A2438;
+  --violet-300:#DDC0FF;--violet-400:#C88FFF;--violet-500:#A86EE0;--violet-800:#241A38;
+  --coral-300:#FF7D94;--coral-500:#FF4D6D;--coral-800:#3D1420;
+  --silver-100:#F4F7FC;--silver-200:#E8ECF4;--silver-400:#8A99B8;--silver-600:#5B6B8A;--silver-700:#3E4C66;
+  --socket-red:#FF5D78;--socket-red-dim:#4A1826;--socket-green:#43D6A3;--socket-green-dim:#123B30;
+  --socket-blue:#4D9BFF;--socket-blue-dim:#132A4A;--socket-white:#DFE7F5;--socket-white-dim:#2B3550;
+  --status-ok:#43D6A3;--status-new:var(--violet-400);--status-new-text:var(--violet-300);
+  --status-warn:var(--coral-300);--status-danger:var(--coral-500);--status-danger-text:var(--coral-300);--status-info:var(--cyan-300);
+  --bg-app:var(--ink-050);--bg-sunken:var(--ink-000);
+  --bg-atmosphere:radial-gradient(84% 48% at 50% 106%,rgba(62,200,255,.08),transparent 72%),radial-gradient(118% 74% at 50% -12%,#102039 0%,#0A1424 46%,#060B14 100%);
+  --surface-well:var(--ink-100);--surface-plate:var(--ink-300);--surface-plate-raised:var(--ink-400);--surface-scrim:rgba(5,9,15,.86);
+  --border-hairline:var(--ink-400);--border-default:var(--ink-500);--border-engraved:var(--ink-600);
+  --border-accent:var(--cyan-500);--border-emphasis:var(--ice-600);
+  --text-primary:var(--silver-200);--text-secondary:var(--silver-400);--text-tertiary:var(--silver-600);
+  --text-disabled:var(--silver-700);--text-accent:var(--ice-500);--text-current:var(--cyan-500);
+  --text-on-accent:var(--ink-050);--text-on-emphasis:var(--ink-050);
+  --accent:var(--cyan-500);--accent-hover:var(--cyan-400);--accent-press:var(--cyan-600);
+  --accent-rest:var(--cyan-700);--accent-tint:var(--cyan-800);--accent-text:var(--cyan-500);
+  --emphasis:var(--ice-500);--emphasis-hover:var(--ice-400);--emphasis-press:var(--ice-600);--emphasis-tint:var(--ice-800);
+  --focus-ring:var(--cyan-300);
+  --kind-gem:var(--cyan-500);--kind-tree:var(--ice-500);--kind-gear:var(--violet-400);--kind-check:var(--status-ok);
+  --state-passed:var(--silver-700);--state-now:var(--cyan-500);--state-upcoming:var(--ice-700);
+}

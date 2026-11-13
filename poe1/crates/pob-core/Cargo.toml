@@ -1,0 +1,16 @@
+[package]
+name = "pob-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+egui.workspace = true
+pob-engine = { path = "../pob-engine" }
+pob-import = { path = "../pob-import" }
+serde = { version = "1", features = ["derive"] }
+# Settings are stored as RON, the format eframe uses, so a file written by
+# the desktop build reads here and back.
+ron = "0.11"
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "webp"] }

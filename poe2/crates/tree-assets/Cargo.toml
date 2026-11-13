@@ -1,0 +1,26 @@
+[package]
+name = "tree-assets"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+# De-risking prototype: prove PoB2's tree art (zstd-compressed DX10 DDS,
+# BC1/BC7, often as texture arrays) can be turned into the same Rgba8 the
+# egui tree canvas already uploads. See ../../README.md.
+
+[dependencies]
+# Standard zstd frames wrap every .dds.zst.
+zstd = "0.13"
+# Pure-Rust block decoders (BC1..BC7). No C, no GPU: matters because Apple
+# GPUs cannot sample BC formats, so decode has to happen on the CPU anyway.
+texture2ddecoder = "0.1"
+# Only for writing PNGs so the decode is eyeballable; the real renderer
+# hands the Rgba8 straight to egui instead.
+image = { version = "0.25", default-features = false, features = ["png"] }
+
+[[bin]]
+name = "decode"
+path = "src/main.rs"
+
+[dev-dependencies]
+image = { version = "0.25", default-features = false, features = ["png"] }

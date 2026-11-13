@@ -1,0 +1,22 @@
+[workspace]
+resolver = "3"
+members = ["crates/pob-engine", "crates/pob-import", "crates/pob-core", "crates/pobng-ffi", "crates/pobng-ios"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.95"
+license = "MIT"
+
+[workspace.dependencies]
+egui = "0.36.1"
+
+# The tree canvas transforms tens of thousands of points per frame, so an
+# unoptimised build is not merely slower — it feels broken to pan. Optimise
+# dependencies (egui, image decoding, mlua) while leaving our own crates
+# debuggable.
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.dev]
+opt-level = 1

@@ -1,0 +1,95 @@
+{
+ "home": {
+  "screen": "home"
+ },
+ "tree": {
+  "screen": "build",
+  "tab": "tree"
+ },
+ "tree-tip": {
+  "screen": "build",
+  "tab": "tree",
+  "treeTip": true
+ },
+ "tree-nosidebar": {
+  "screen": "build",
+  "tab": "tree",
+  "sidebarOpen": false
+ },
+ "class-picker": {
+  "screen": "build",
+  "tab": "tree",
+  "classOpen": true
+ },
+ "skills": {
+  "screen": "build",
+  "tab": "skills"
+ },
+ "items": {
+  "screen": "build",
+  "tab": "items"
+ },
+ "items-sel": {
+  "screen": "build",
+  "tab": "items",
+  "eqSel": "Body Armour"
+ },
+ "calcs": {
+  "screen": "build",
+  "tab": "calcs"
+ },
+ "config": {
+  "screen": "build",
+  "tab": "config"
+ },
+ "config-all": {
+  "screen": "build",
+  "tab": "config",
+  "cfgShowAll": true
+ },
+ "compare": {
+  "screen": "build",
+  "tab": "compare",
+  "cmpTab": "summary"
+ },
+ "compare-items": {
+  "screen": "build",
+  "tab": "compare",
+  "cmpTab": "items"
+ },
+ "compare-config": {
+  "screen": "build",
+  "tab": "compare",
+  "cmpTab": "config"
+ },
+ "notes": {
+  "screen": "build",
+  "tab": "notes",
+  "notesMode": "view"
+ },
+ "notes-edit": {
+  "screen": "build",
+  "tab": "notes",
+  "notesMode": "edit"
+ },
+ "dialog-import": {
+  "screen": "build",
+  "tab": "tree",
+  "dialog": "import"
+ },
+ "dialog-save": {
+  "screen": "build",
+  "tab": "tree",
+  "dialog": "save"
+ },
+ "items-jewel": {
+  "screen": "build",
+  "tab": "items",
+  "eqSel": "jewel:1"
+ },
+ "calcs-adv": {
+  "screen": "build",
+  "tab": "calcs",
+  "calcsAdv": true
+ }
+}

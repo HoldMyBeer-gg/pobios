@@ -1,0 +1,18 @@
+[package]
+name = "pobng-ios"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+# A staticlib for Xcode to link, and a lib so the desktop build can still
+# typecheck this crate without an iOS toolchain.
+[lib]
+crate-type = ["staticlib", "lib"]
+
+[dependencies]
+egui.workspace = true
+egui-wgpu = "0.36.1"
+wgpu = "30"
+pob-core = { path = "../pob-core" }
+pobng-ffi = { path = "../pobng-ffi" }

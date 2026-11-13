@@ -1,0 +1,21 @@
+[package]
+name = "pobng-ffi"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lib]
+# staticlib for Xcode to link; lib so uniffi-bindgen and the desktop build
+# can see the crate too.
+crate-type = ["staticlib", "lib"]
+
+[dependencies]
+pob-core = { path = "../pob-core" }
+egui = "0.36.1"
+pob-engine = { path = "../pob-engine" }
+pob-import = { path = "../pob-import" }
+uniffi = { version = "0.32", features = ["build", "cli"] }
+
+[build-dependencies]
+uniffi = { version = "0.32", features = ["build"] }

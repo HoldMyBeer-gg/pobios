@@ -1,0 +1,21 @@
+[package]
+name = "pob-engine"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dev-dependencies]
+# Every test that boots an engine is marked `#[serial]`. PoB supports one
+# engine per process — see the LIVE guard in lib.rs — and cargo runs tests on
+# parallel threads. Marking the engine tests specifically keeps the rest of
+# the suite parallel, where a blanket --test-threads=1 would not.
+serial_test = "4"
+
+[dependencies]
+mlua = { version = "0.12", features = ["luajit", "vendored"] }
+# Every build load runs pob_import::check_xml first; see load_build_xml.
+pob-import = { path = "../pob-import" }
+# PoB's timeless jewel seed tables ship zlib-compressed and are unpacked
+# through a runtime `Inflate` that the headless stub returns "" from.
+flate2 = "1.1"

@@ -1,0 +1,21 @@
+:root{
+  --engrave-top:inset 0 1px 0 rgba(155,227,255,.09);
+  --engrave-bottom:inset 0 -1px 0 rgba(5,9,15,.7);
+  --engrave:var(--engrave-top),var(--engrave-bottom);
+  --engrave-strong:inset 0 1px 0 rgba(155,227,255,.16),inset 0 -1px 0 rgba(5,9,15,.85);
+  --inset-well:inset 0 1px 2px rgba(5,9,15,.9);
+  --glow-accent:0 0 20px rgba(62,200,255,.45);
+  --glow-accent-soft:0 0 14px rgba(62,200,255,.26);
+  --glow-emphasis:0 0 18px rgba(205,216,236,.22);
+  --glow-emphasis-soft:0 0 11px rgba(205,216,236,.14);
+  --glow-red:0 0 10px rgba(255,93,120,.45);
+  --glow-green:0 0 10px rgba(67,214,163,.45);
+  --glow-blue:0 0 10px rgba(77,155,255,.45);
+  --shadow-sheet:0 -18px 40px rgba(5,9,15,.8);
+  --shadow-float:0 8px 24px rgba(5,9,15,.7);
+  --ring-focus:0 0 0 2px var(--ink-050),0 0 0 4px var(--focus-ring);
+  --plate-fill:linear-gradient(var(--ink-300),var(--ink-200));
+  --plate-fill-flat:var(--ink-300);
+  --accent-fill:linear-gradient(var(--cyan-400),var(--cyan-600));
+  --emphasis-fill:linear-gradient(var(--ice-400),var(--ice-600));
+}

@@ -1,0 +1,15 @@
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background-color:var(--bg-app);background-image:var(--bg-atmosphere);background-attachment:fixed;background-repeat:no-repeat;color:var(--text-primary);font:var(--text-body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+h1,h2,h3,h4,p,figure{margin:0}
+ul,ol{margin:0;padding:0;list-style:none}
+button,input,textarea,select{font:inherit;color:inherit;background:none;border:0;margin:0}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+a{color:var(--text-accent);text-decoration:none;transition:var(--t-hover)}
+a:hover{color:var(--accent-hover)}
+:focus-visible{outline:none;box-shadow:var(--ring-focus)}
+::selection{background:var(--accent-tint);color:var(--silver-100)}
+::placeholder{color:var(--text-tertiary)}
+[data-num],.asc-num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.asc-app{max-width:var(--app-max);margin:0 auto;min-height:100%;overscroll-behavior:none;-webkit-user-select:none;user-select:none}
+.asc-app input,.asc-app textarea{-webkit-user-select:text;user-select:text}

@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.__resources={"https://unpkg.com/react@18.3.1/umd/react.production.min.js":"./vendor/react.js","https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js":"./vendor/react-dom.js"};window.__SCREEN_OVERRIDE={"screen": "build", "tab": "tree"};</script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script>window.ASCENT_ICON_BASE='_ds/ascent-design-system-c46e90b6-60e3-45e7-b18f-af1dc2ca60be/assets/icons'</script>
+<link rel="stylesheet" href="_ds/ascent-design-system-c46e90b6-60e3-45e7-b18f-af1dc2ca60be/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/ascent-design-system-c46e90b6-60e3-45e7-b18f-af1dc2ca60be/tokens/colors.css">
+<link rel="stylesheet" href="_ds/ascent-design-system-c46e90b6-60e3-45e7-b18f-af1dc2ca60be/tokens/typography.css">
+<link rel="stylesheet" href="_ds/ascent-design-system-c46e90b6-60e3-45e7-b18f-af1dc2ca60be/components/ascent.css">
+<link rel="stylesheet" href="_ds/ascent-design-system-c46e90b6-60e3-45e7-b18f-af1dc2ca60be/styles.css">
+<script src="_ds/ascent-design-system-c46e90b6-60e3-45e7-b18f-af1dc2ca60be/_ds_bundle.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>html,body{margin:0;height:100%;background:#05090F}a{color:#3EC8FF;text-decoration:none}a:hover{color:#7DDAFF}input::placeholder{color:#3E4C66}*{box-sizing:border-box}::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:#1A2438;border-radius:4px}::-webkit-scrollbar-track{background:transparent}</style>
+</helmet>
+<div style="height:100vh;display:flex;flex-direction:column;background-color:#08101C;background-image:radial-gradient(118% 74% at 50% -12%,#102039 0%,#0A1424 46%,#060B14 100%);background-repeat:no-repeat;font-family:'IBM Plex Sans',sans-serif;color:#E8ECF4;overflow:hidden;user-select:none">
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Builds home" style="flex:1;overflow:auto;display:flex;justify-content:center;padding:48px 24px">
+<div style="width:100%;max-width:760px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px">
+<div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:27px;letter-spacing:-.025em;color:#E8ECF4">Builds</div>
+<div style="display:flex;gap:8px">
+<button onClick="{{ newBuild }}" style="height:40px;padding:0 16px;border-radius:5px;border:0;background:#3EC8FF;color:#08101C;font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:13px;cursor:pointer">New build</button>
+<button onClick="{{ openImport }}" style="height:40px;padding:0 16px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:13px;cursor:pointer" style-hover="border-color:#26334D">Import code</button>
+</div>
+</div>
+<div style="display:flex;gap:8px;margin-top:20px">
+<input value="{{ buildSearch }}" onChange="{{ setBuildSearch }}" placeholder="Search — e.g. class:occultist winter" style="flex:1;height:40px;background:#0B1420;border:1px solid #1A2438;border-radius:5px;box-shadow:inset 0 1px 2px rgba(5,9,15,.9);color:#E8ECF4;font-family:'IBM Plex Sans',sans-serif;font-size:13px;padding:0 12px;outline:none"></input>
+<div style="display:flex;border:1px solid #1A2438;border-radius:5px;overflow:hidden">
+<sc-for list="{{ sorts }}" as="s" hint-placeholder-count="3">
+<button onClick="{{ s.pick }}" style="height:40px;padding:0 12px;border:0;background:{{ s.bg }};color:{{ s.fg }};font-family:'IBM Plex Sans',sans-serif;font-size:13px;cursor:pointer">{{ s.label }}</button>
+</sc-for>
+</div>
+</div>
+<div style="margin-top:16px;background:#101828;border:1px solid #1A2438;border-radius:5px;box-shadow:inset 0 1px 0 rgba(155,227,255,.09);overflow:hidden">
+<sc-for list="{{ builds }}" as="b" hint-placeholder-count="5">
+<div onClick="{{ b.open }}" style="display:grid;grid-template-columns:1fr auto auto auto;gap:16px;align-items:center;padding:14px 16px;border-bottom:1px solid #162032;cursor:pointer" style-hover="background:#131C2E">
+<div style="min-width:0"><div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;color:#E8ECF4">{{ b.name }}</div><div style="font-size:13px;color:#8A99B8;margin-top:2px">{{ b.klass }} · {{ b.skill }}</div></div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#CDD8EC;font-variant-numeric:tabular-nums">Lv {{ b.level }}</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#5B6B8A">{{ b.updated }}</div>
+<div style="color:#5B6B8A;font-size:13px">›</div>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:12px;font-size:13px;color:#5B6B8A">Stored on this device. No signal needed.</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isBuild }}" hint-placeholder-val="{{ true }}">
+<header data-screen-label="Top chrome" style="height:52px;flex:none;display:flex;align-items:center;gap:10px;padding:0 16px;border-bottom:1px solid #1A2438;background:#0A1220;position:relative;z-index:30;overflow:hidden">
+<button onClick="{{ goHome }}" style="height:36px;padding:0 10px;border-radius:5px;border:1px solid #1A2438;background:transparent;color:#8A99B8;font-family:'IBM Plex Sans',sans-serif;font-size:13px;cursor:pointer" style-hover="color:#CDD8EC;border-color:#26334D">‹ Builds</button>
+<button onClick="{{ openSave }}" title="Rename or save a copy" style="min-width:0;max-width:180px;flex:0 1 auto;height:36px;padding:0 10px;border-radius:5px;border:0;background:transparent;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:#E8ECF4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" style-hover="background:#131C2E">{{ buildName }}</button>
+<button onClick="{{ toggleClassPicker }}" style="height:36px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-family:'IBM Plex Sans',sans-serif;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px" style-hover="border-color:#26334D">{{ klass }} · {{ asc }}<span style="color:#5B6B8A;font-size:11px">▾</span></button>
+<button style="height:36px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-family:'IBM Plex Sans',sans-serif;font-size:13px;cursor:pointer" style-hover="border-color:#26334D">Loadout: Default ▾</button>
+<div style="flex:1"></div>
+<div style="display:flex;align-items:center;gap:8px;flex:none;white-space:nowrap">
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5B6B8A">Points</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#CDD8EC;font-variant-numeric:tabular-nums;white-space:nowrap">{{ pts }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#8A99B8;font-variant-numeric:tabular-nums;white-space:nowrap">6 / 8</span>
+</div>
+<div style="display:flex;align-items:center;gap:4px;border:1px solid #1A2438;border-radius:5px;background:#0B1420;box-shadow:inset 0 1px 2px rgba(5,9,15,.9);padding:2px">
+<button onClick="{{ decLevel }}" style="width:32px;height:30px;border:0;background:transparent;color:#8A99B8;font-size:15px;cursor:pointer;border-radius:3px" style-hover="background:#1A2438;color:#E8ECF4">−</button>
+<div style="min-width:64px;text-align:center"><span style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#5B6B8A">Lv </span><span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#E8ECF4;font-variant-numeric:tabular-nums">{{ level }}</span></div>
+<button onClick="{{ incLevel }}" style="width:32px;height:30px;border:0;background:transparent;color:#8A99B8;font-size:15px;cursor:pointer;border-radius:3px" style-hover="background:#1A2438;color:#E8ECF4">+</button>
+</div>
+<button onClick="{{ openImport }}" style="height:36px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-family:'IBM Plex Sans',sans-serif;font-size:13px;cursor:pointer" style-hover="border-color:#26334D">Import…</button>
+<button onClick="{{ saveNow }}" style="height:36px;padding:0 16px;border-radius:5px;border:0;background:#3EC8FF;color:#08101C;font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:13px;cursor:pointer" style-hover="background:#7DDAFF" style-active="background:#1C9FD6">{{ saveLabel }}</button>
+<sc-if value="{{ classOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;top:56px;left:180px;width:300px;background:#101828;border:1px solid #26334D;border-radius:8px;box-shadow:0 18px 40px rgba(3,6,11,.8);padding:8px;z-index:40">
+<div style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5B6B8A;padding:6px 8px">Class</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+<sc-for list="{{ classes }}" as="c" hint-placeholder-count="4">
+<button onClick="{{ c.pick }}" style="height:34px;border-radius:5px;border:1px solid {{ c.bc }};background:{{ c.bg }};color:{{ c.fg }};font-family:'IBM Plex Sans',sans-serif;font-size:13px;cursor:pointer;text-align:left;padding:0 10px">{{ c.name }}</button>
+</sc-for>
+</div>
+<div style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5B6B8A;padding:10px 8px 6px">Ascendancy</div>
+<div style="display:flex;flex-wrap:wrap;gap:4px">
+<sc-for list="{{ ascs }}" as="c" hint-placeholder-count="3">
+<button onClick="{{ c.pick }}" style="height:30px;border-radius:5px;border:1px solid {{ c.bc }};background:{{ c.bg }};color:{{ c.fg }};font-family:'IBM Plex Sans',sans-serif;font-size:13px;cursor:pointer;padding:0 10px">{{ c.name }}</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+</header>
+
+<div style="flex:1;display:flex;min-height:0">
+<sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}">
+<aside data-screen-label="Stats sidebar" style="width:{{ sidebarW }}px;flex:none;overflow:auto;border-right:1px solid #1A2438;background:#0A1220;padding:12px 12px 24px">
+<div style="display:flex;align-items:center;gap:8px;padding:2px 4px 10px">
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5B6B8A;flex:1">Main skill</span>
+<button onClick="{{ collapseSidebar }}" style="width:26px;height:26px;border-radius:5px;border:1px solid #1A2438;background:transparent;color:#5B6B8A;cursor:pointer;font-size:13px" style-hover="color:#CDD8EC">⟨</button>
+</div>
+<div style="background:#101828;border:1px solid #1A2438;border-radius:5px;padding:10px 12px;box-shadow:inset 0 1px 0 rgba(155,227,255,.09)">
+<div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;color:#E8ECF4">{{ mainName }}</div>
+<div style="font-size:13px;color:#8A99B8;margin-top:2px">{{ mainSub }}</div>
+</div>
+<sc-for list="{{ statSections }}" as="sec" hint-placeholder-count="4">
+<div style="margin-top:12px">
+<button onClick="{{ sec.toggle }}" style="width:100%;display:flex;align-items:center;gap:8px;border:0;background:transparent;padding:0 4px 6px;cursor:pointer">
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8A99B8">{{ sec.title }}</span>
+<i style="flex:1;height:1px;background:#1A2438;display:block"></i>
+<span style="color:#5B6B8A;font-size:11px">{{ sec.chev }}</span>
+</button>
+<sc-if value="{{ sec.open }}" hint-placeholder-val="{{ true }}">
+<div style="background:#101828;border:1px solid #1A2438;border-radius:5px;padding:4px 12px;box-shadow:inset 0 1px 0 rgba(155,227,255,.09)">
+<sc-for list="{{ sec.rows }}" as="r" hint-placeholder-count="4">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:5px 0;border-bottom:1px solid #131C2C"><span style="font-size:13px;color:#8A99B8">{{ r.k }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;color:{{ r.c }};font-variant-numeric:tabular-nums;white-space:nowrap">{{ r.v }}</span></div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-for>
+<div style="margin-top:12px;background:rgba(255,77,109,.07);border:1px solid rgba(255,77,109,.35);border-radius:5px;padding:10px 12px">
+<div style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#FF7D94">4 warnings</div>
+<div style="font-size:13px;color:#8A99B8;margin-top:4px;text-wrap:pretty">Unreserved mana is negative. Amulet is missing an anoint.</div>
+</div>
+</aside>
+<div onPointerDown="{{ startDrag }}" style="width:7px;flex:none;cursor:col-resize;display:flex;align-items:center;justify-content:center;background:transparent" style-hover="background:rgba(62,200,255,.08)"><i style="width:1px;height:44px;background:#26334D;border-radius:1px;display:block"></i></div>
+</sc-if>
+<sc-if value="{{ sidebarClosed }}" hint-placeholder-val="{{ false }}">
+<div style="width:40px;flex:none;border-right:1px solid #1A2438;background:#0A1220;display:flex;justify-content:center;padding-top:12px">
+<button onClick="{{ expandSidebar }}" style="width:26px;height:26px;border-radius:5px;border:1px solid #1A2438;background:transparent;color:#5B6B8A;cursor:pointer;font-size:13px" style-hover="color:#CDD8EC">⟩</button>
+</div>
+</sc-if>
+
+<main style="flex:1;min-width:0;display:flex;flex-direction:column">
+<div style="flex:none;display:flex;align-items:center;gap:2px;padding:8px 16px 0;border-bottom:1px solid #1A2438">
+<sc-for list="{{ tabs }}" as="t" hint-placeholder-count="6">
+<button onClick="{{ t.pick }}" style="height:38px;padding:0 16px;border:0;border-bottom:2px solid {{ t.edge }};background:transparent;color:{{ t.fg }};font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:13px;cursor:pointer" style-hover="color:#E8ECF4">{{ t.label }}</button>
+</sc-for>
+</div>
+
+<sc-if value="{{ isTree }}" hint-placeholder-val="{{ true }}">
+<div data-screen-label="Tree" style="flex:1;min-height:0;display:flex;flex-direction:column;padding:12px 16px 16px;gap:10px">
+<div style="flex:none;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Tree: Default ▾</button>
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">3.29 ▾</button>
+<div style="flex:1;min-width:180px;position:relative">
+<input value="{{ treeSearch }}" onChange="{{ setTreeSearch }}" placeholder="Search nodes — e.g. chill effect" style="width:100%;height:34px;background:#0B1420;border:1px solid #1A2438;border-radius:5px;box-shadow:inset 0 1px 2px rgba(5,9,15,.9);color:#E8ECF4;font-family:'IBM Plex Sans',sans-serif;font-size:13px;padding:0 12px;outline:none"></input>
+</div>
+<button onClick="{{ toggleTreeCompare }}" style="display:flex;align-items:center;gap:6px;border:0;background:transparent;cursor:pointer;padding:0 4px"><i style="width:18px;height:18px;border-radius:3px;border:1px solid {{ treeCmpBc }};background:{{ treeCmpBg }};color:#08101C;font-size:12px;line-height:1;display:grid;place-items:center;font-weight:700;font-style:normal">{{ treeCmpMark }}</i><span style="font-size:13px;color:#8A99B8">Compare</span></button>
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Node power: Off ▾</button>
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Find Timeless Jewel</button>
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Import / Export…</button>
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid rgba(255,77,109,.4);background:transparent;color:#FF7D94;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Reset…</button>
+</div>
+<div onClick="{{ toggleTreeTip }}" style="flex:1;min-height:0;position:relative;border:1px solid #1A2438;border-radius:8px;overflow:hidden;background-color:#060B14;background-image:radial-gradient(60% 60% at 50% 45%,rgba(16,32,57,.9),rgba(6,11,20,1) 80%),radial-gradient(circle at 30% 30%,rgba(62,200,255,.05),transparent 40%),radial-gradient(circle at 70% 65%,rgba(200,143,255,.04),transparent 40%);cursor:pointer">
+<div style="position:absolute;inset:0;background-image:radial-gradient(rgba(138,153,184,.14) 1px,transparent 1.4px);background-size:26px 26px"></div>
+<div style="position:absolute;left:24px;bottom:52px;text-align:left;max-width:320px">
+<div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:17px;color:#CDD8EC">Passive tree viewport</div>
+<div style="font-size:13px;color:#5B6B8A;margin-top:6px;text-wrap:pretty">Renders natively from the community PoB Lua tree data. Pinch to zoom, drag to pan. Tap a node for its tooltip.</div>
+</div>
+<div style="position:absolute;left:12px;bottom:12px;display:flex;gap:6px">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8A99B8;background:rgba(10,18,32,.85);border:1px solid #1A2438;border-radius:3px;padding:4px 8px">{{ allocChip }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8A99B8;background:rgba(10,18,32,.85);border:1px solid #1A2438;border-radius:3px;padding:4px 8px">{{ cmpChip }}</span>
+</div>
+<sc-if value="{{ treeTip }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;right:16px;top:16px;width:320px;background:rgba(13,20,33,.97);border:1px solid #26334D;border-radius:8px;box-shadow:0 18px 40px rgba(3,6,11,.8);padding:14px 16px" data-screen-label="Node tooltip">
+<div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:#CDD8EC">Bitter Frost</div>
+<div style="font-size:13px;color:#4D9BFF;margin-top:8px;line-height:1.5;text-wrap:pretty">Enemies Chilled by your Hits have Cold Damage taken increased by Chill Effect. Cannot deal non-Cold Damage.</div>
+<div style="border-top:1px solid #162032;margin-top:10px;padding-top:10px">
+<div style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5B6B8A">Unallocating gives</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#FF7D94;margin-top:6px;line-height:1.6;font-variant-numeric:tabular-nums">−1,251.7 Average Hit (−10.6%)<br>−6,852.8 Hit DPS (−10.6%)</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8A99B8;margin-top:8px">6,526 gold to unallocate</div>
+</div>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isSkills }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Skills" style="flex:1;min-height:0;display:flex;gap:0">
+<div style="width:340px;flex:none;border-right:1px solid #1A2438;overflow:auto;padding:12px">
+<div style="display:flex;gap:6px;padding:0 0 10px">
+<button style="flex:1;text-align:left;height:34px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Skill set: Default ▾</button>
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Manage…</button>
+</div>
+<div style="display:flex;align-items:center;gap:8px;padding:0 4px 10px">
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5B6B8A;flex:1">Socket groups</span>
+<button style="height:28px;padding:0 10px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;cursor:pointer;font-family:'IBM Plex Sans',sans-serif">＋ New</button>
+</div>
+<div style="display:grid;gap:8px">
+<sc-for list="{{ groups }}" as="g" hint-placeholder-count="6">
+<button onClick="{{ g.pick }}" style="text-align:left;background:#101828;border:1px solid {{ g.bc }};border-left:2px solid {{ g.edge }};border-radius:5px;padding:10px 12px;cursor:pointer;box-shadow:inset 0 1px 0 rgba(155,227,255,.09)">
+<div style="display:flex;align-items:center;gap:8px"><span style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;color:{{ g.fg }};min-width:0">{{ g.name }}</span></div>
+<div style="display:flex;gap:4px;margin-top:8px;align-items:center">
+<sc-for list="{{ g.pips }}" as="p" hint-placeholder-count="4">
+<i style="width:10px;height:10px;border-radius:50%;background:{{ p.c }};box-shadow:0 0 8px {{ p.glow }};display:block"></i>
+</sc-for>
+<span style="font-size:11px;color:#5B6B8A;margin-left:6px">{{ g.slot }}</span>
+</div>
+</button>
+</sc-for>
+</div>
+</div>
+<div style="flex:1;min-width:0;overflow:auto;padding:16px">
+<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+<div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;color:#E8ECF4">{{ selGroupName }}</div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8A99B8;border:1px solid #1A2438;border-radius:3px;padding:3px 8px">{{ selGroupChip }}</span>
+<div style="flex:1"></div>
+<button style="height:30px;padding:0 10px;border-radius:5px;border:1px solid #1A2438;background:#0B1420;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Socketed in: Boots ▾</button>
+<button onClick="{{ toggleFullDps }}" style="display:flex;align-items:center;gap:6px;border:0;background:transparent;cursor:pointer;padding:0"><span style="font-size:13px;color:#8A99B8">Full DPS</span><i style="width:18px;height:18px;border-radius:3px;border:1px solid {{ fullDpsBc }};background:{{ fullDpsBg }};color:#08101C;font-size:12px;line-height:1;display:grid;place-items:center;font-weight:700;font-style:normal">{{ fullDpsMark }}</i></button>
+<button onClick="{{ toggleGroupOn }}" style="display:flex;align-items:center;gap:8px;border:0;background:transparent;cursor:pointer;padding:0"><span style="font-size:13px;color:#8A99B8">Enabled</span><i style="width:36px;height:20px;border-radius:10px;background:{{ groupTrack }};position:relative;display:block;transition:background 120ms"><i style="position:absolute;top:2px;left:{{ groupKnobX }}px;width:16px;height:16px;border-radius:50%;background:#E8ECF4;display:block;transition:left 120ms"></i></i></button>
+</div>
+<div style="margin-top:14px;background:#101828;border:1px solid #1A2438;border-radius:5px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(155,227,255,.09)">
+<div style="display:grid;grid-template-columns:1fr 110px 72px 48px 56px;gap:8px;padding:8px 14px;border-bottom:1px solid #1A2438">
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5B6B8A">Gem</span>
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5B6B8A">Level</span>
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5B6B8A">Quality</span>
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5B6B8A">On</span>
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5B6B8A">Count</span>
+</div>
+<sc-for list="{{ gems }}" as="gm" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:1fr 110px 72px 48px 56px;gap:8px;align-items:center;padding:9px 14px;border-bottom:1px solid #131C2C">
+<div style="display:flex;align-items:center;gap:8px;min-width:0"><i style="width:8px;height:8px;border-radius:50%;background:{{ gm.c }};box-shadow:0 0 8px {{ gm.glow }};flex:none"></i><span style="font-size:13px;color:#E8ECF4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ gm.name }}</span></div>
+<div style="display:flex;align-items:center;gap:2px"><button onClick="{{ gm.dec }}" style="width:22px;height:22px;border:1px solid #1A2438;border-radius:3px;background:transparent;color:#8A99B8;cursor:pointer;font-size:12px">−</button><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#E8ECF4;min-width:26px;text-align:center;font-variant-numeric:tabular-nums">{{ gm.lvl }}</span><button onClick="{{ gm.inc }}" style="width:22px;height:22px;border:1px solid #1A2438;border-radius:3px;background:transparent;color:#8A99B8;cursor:pointer;font-size:12px">+</button></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#8A99B8;font-variant-numeric:tabular-nums">{{ gm.q }}%</span>
+<button onClick="{{ gm.flip }}" style="width:18px;height:18px;border-radius:3px;border:1px solid {{ gm.boxBc }};background:{{ gm.boxBg }};color:#08101C;cursor:pointer;font-size:12px;line-height:1;display:grid;place-items:center;font-weight:700">{{ gm.mark }}</button>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#8A99B8;font-variant-numeric:tabular-nums">{{ gm.cnt }}</span>
+</div>
+</sc-for>
+<div style="padding:10px 14px"><input placeholder="Add gem — type to search all gems" style="width:100%;height:34px;background:#0B1420;border:1px solid #1A2438;border-radius:5px;box-shadow:inset 0 1px 2px rgba(5,9,15,.9);color:#E8ECF4;font-family:'IBM Plex Sans',sans-serif;font-size:13px;padding:0 12px;outline:none"></input></div>
+</div>
+<div style="display:flex;gap:16px;margin-top:14px;flex-wrap:wrap">
+<div style="flex:1;min-width:240px;background:#101828;border:1px solid #1A2438;border-radius:5px;padding:12px 14px">
+<div style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8A99B8">Gem options</div>
+<div style="display:flex;justify-content:space-between;padding:8px 0 0;font-size:13px;color:#8A99B8">Default gem level<span style="font-family:'JetBrains Mono',monospace;color:#E8ECF4">Normal maximum</span></div>
+<div style="display:flex;justify-content:space-between;padding:6px 0 0;font-size:13px;color:#8A99B8">Default gem quality<span style="font-family:'JetBrains Mono',monospace;color:#E8ECF4">0</span></div>
+<div style="display:flex;justify-content:space-between;padding:6px 0 0;font-size:13px;color:#8A99B8">Sort gems by DPS<span style="font-family:'JetBrains Mono',monospace;color:#E8ECF4">Combined DPS</span></div>
+<div style="display:flex;justify-content:space-between;padding:6px 0 0;font-size:13px;color:#8A99B8">Show support gems<span style="font-family:'JetBrains Mono',monospace;color:#E8ECF4">All</span></div>
+<div style="display:flex;justify-content:space-between;padding:6px 0 0;font-size:13px;color:#8A99B8">Show legacy gems<span style="font-family:'JetBrains Mono',monospace;color:#5B6B8A">Off</span></div>
+</div>
+<div style="flex:1;min-width:240px;background:#101828;border:1px solid #1A2438;border-radius:5px;padding:12px 14px">
+<div style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8A99B8">Tips</div>
+<div style="font-size:13px;color:#8A99B8;margin-top:8px;line-height:1.5;text-wrap:pretty">Long-press a group to enable, disable, or set as main skill. Drag groups to reorder.</div>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isItems }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Items" style="flex:1;min-height:0;display:flex;flex-wrap:wrap;overflow:auto;align-content:flex-start">
+<div style="width:300px;flex:1 1 300px;max-width:340px;min-height:0;border-right:1px solid #1A2438;overflow:auto;padding:12px">
+<div style="display:flex;align-items:center;gap:8px;padding:0 4px 10px">
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5B6B8A;flex:1">Equipped</span>
+<span style="font-size:11px;color:#5B6B8A">Weapon set</span>
+<div style="display:flex;border:1px solid #1A2438;border-radius:3px;overflow:hidden"><button style="height:24px;padding:0 10px;border:0;background:#1A2438;color:#CDD8EC;font-size:11px;font-family:'JetBrains Mono',monospace;cursor:pointer">I</button><button style="height:24px;padding:0 10px;border:0;background:transparent;color:#5B6B8A;font-size:11px;font-family:'JetBrains Mono',monospace;cursor:pointer">II</button></div>
+</div>
+<div style="background:#101828;border:1px solid #1A2438;border-radius:5px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(155,227,255,.09)">
+<sc-for list="{{ equipped }}" as="e" hint-placeholder-count="10">
+<button onClick="{{ e.pick }}" style="width:100%;text-align:left;display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:9px 12px;border:0;border-left:2px solid {{ e.edge }};border-bottom:1px solid #131C2C;background:{{ e.bg }};cursor:pointer" style-hover="background:#131C2E">
+<span style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#5B6B8A;flex:none;width:64px">{{ e.slot }}</span>
+<span style="font-size:13px;color:{{ e.c }};min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ e.name }}</span>
+</button>
+</sc-for>
+</div>
+<div style="margin-top:12px;background:#101828;border:1px solid #1A2438;border-radius:5px;padding:10px 12px;box-shadow:inset 0 1px 0 rgba(155,227,255,.09)">
+<div style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8A99B8">Shared items</div>
+<div style="font-size:13px;color:#5B6B8A;margin-top:6px;text-wrap:pretty">Shared across all builds. Drag an item here from any list.</div>
+</div>
+</div>
+<div style="flex:2 1 320px;min-width:300px;overflow:auto;padding:16px;border-right:1px solid #1A2438">
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Item set: Default ▾</button>
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Manage…</button>
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Trade for these items</button>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Uniques ▾</button>
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Any slot ▾</button>
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Any league ▾</button>
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Obtainable ▾</button>
+<input value="{{ dbSearch }}" onChange="{{ setDbSearch }}" placeholder="Search items" style="flex:1;min-width:160px;height:34px;background:#0B1420;border:1px solid #1A2438;border-radius:5px;box-shadow:inset 0 1px 2px rgba(5,9,15,.9);color:#E8ECF4;font-family:'IBM Plex Sans',sans-serif;font-size:13px;padding:0 12px;outline:none"></input>
+</div>
+<div style="display:flex;gap:8px;margin-top:10px">
+<button style="height:32px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Craft item…</button>
+<button style="height:32px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Create from text…</button>
+</div>
+<div style="margin-top:10px;background:#101828;border:1px solid #1A2438;border-radius:5px;overflow:hidden">
+<sc-for list="{{ dbItems }}" as="d" hint-placeholder-count="10">
+<button onClick="{{ d.pick }}" style="width:100%;text-align:left;padding:9px 12px;border:0;border-bottom:1px solid #131C2C;background:{{ d.bg }};cursor:pointer;display:flex;justify-content:space-between;gap:12px;align-items:baseline" style-hover="background:#131C2E">
+<span style="font-size:13px;color:{{ d.c }}">{{ d.name }}</span>
+<span style="font-size:11px;color:#5B6B8A;flex:none">{{ d.base }}</span>
+</button>
+</sc-for>
+</div>
+</div>
+<div style="flex:1 1 320px;max-width:380px;min-width:300px;overflow:auto;padding:16px">
+<div style="background:#0D1521;border:1px solid #26334D;border-radius:8px;padding:16px" data-screen-label="Item tooltip">
+<div style="text-align:center">
+<div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:#C88FFF">{{ selName }}</div>
+<div style="font-size:13px;color:#8A99B8;margin-top:2px">{{ selBase }}</div>
+</div>
+<div style="border-top:1px solid #162032;margin-top:12px;padding-top:10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#8A99B8;text-align:center">Requires level {{ selReq }}</div>
+<div style="border-top:1px solid #162032;margin-top:10px;padding-top:10px">
+<sc-for list="{{ selMods }}" as="m" hint-placeholder-count="4">
+<div style="font-size:13px;color:#4D9BFF;text-align:center;line-height:1.6;text-wrap:pretty">{{ m }}</div>
+</sc-for>
+</div>
+<sc-if value="{{ selCorrupted }}" hint-placeholder-val="{{ true }}">
+<div style="font-size:13px;color:#FF7D94;text-align:center;margin-top:10px">Corrupted</div>
+</sc-if>
+<div style="border-top:1px solid #162032;margin-top:12px;padding-top:10px">
+<div style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5B6B8A;text-align:center">Equipping changes</div>
+<div style="font-family:'JetBrains Mono',monospace;font-size:13px;margin-top:6px;text-align:center;line-height:1.7;font-variant-numeric:tabular-nums"><span style="color:#43D6A3">+281.4 Average Hit (+2.4%)</span><br><span style="color:#43D6A3">+1,788 Effective Hit Pool (+7.6%)</span><br><span style="color:#FF7D94">−29% Chaos Resistance</span></div>
+</div>
+<div style="display:flex;gap:8px;margin-top:14px">
+<button style="flex:1;height:38px;border-radius:5px;border:0;background:#3EC8FF;color:#08101C;font-weight:600;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer" style-hover="background:#7DDAFF">Equip</button>
+<button style="flex:1;height:38px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Copy</button>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isCalcs }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Calcs" style="flex:1;min-height:0;overflow:auto;padding:16px">
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#101828;border:1px solid #1A2438;border-radius:5px;padding:10px 12px;margin-bottom:12px;box-shadow:inset 0 1px 0 rgba(155,227,255,.09)">
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8A99B8">View skill</span>
+<button style="height:30px;padding:0 10px;border-radius:5px;border:1px solid #1A2438;background:#0B1420;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Winter Orb ▾</button>
+<button style="height:30px;padding:0 10px;border-radius:5px;border:1px solid #1A2438;background:#0B1420;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Part: Idle ▾</button>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8A99B8;border:1px solid #1A2438;border-radius:3px;padding:4px 8px">Stages: 11</span>
+<button style="height:30px;padding:0 10px;border-radius:5px;border:1px solid #1A2438;background:#0B1420;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Mode: Effective DPS ▾</button>
+<span style="font-size:13px;color:#8A99B8;flex-basis:100%;text-wrap:pretty">Auras &amp; buffs: Arcane Surge · Clarity · Herald of Ice · Infused Channelling · Summon Skitterbots · Tempest Shield — Combat: 7 Power Charges</span>
+</div>
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+<input value="{{ calcsSearch }}" onChange="{{ setCalcsSearch }}" placeholder="Search calculations — e.g. crit, leech, recharge" style="flex:1;min-width:220px;height:36px;background:#0B1420;border:1px solid #1A2438;border-radius:5px;box-shadow:inset 0 1px 2px rgba(5,9,15,.9);color:#E8ECF4;font-family:'IBM Plex Sans',sans-serif;font-size:13px;padding:0 12px;outline:none"></input>
+<button onClick="{{ toggleAdv }}" style="display:flex;align-items:center;gap:8px;border:0;background:transparent;cursor:pointer;padding:0"><span style="font-size:13px;color:#8A99B8">Show the full breakdown</span><i style="width:36px;height:20px;border-radius:10px;background:{{ advTrack }};position:relative;display:block;transition:background 120ms"><i style="position:absolute;top:2px;left:{{ advKnobX }}px;width:16px;height:16px;border-radius:50%;background:#E8ECF4;display:block;transition:left 120ms"></i></i></button>
+</div>
+<div style="margin-top:8px;font-size:13px;color:#5B6B8A">{{ calcsHint }}</div>
+<div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px">
+<sc-for list="{{ calcCards }}" as="cc" hint-placeholder-count="6">
+<div style="background:#101828;border:1px solid #1A2438;border-radius:5px;box-shadow:inset 0 1px 0 rgba(155,227,255,.09);padding:12px 14px;align-self:start">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><span style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;color:{{ cc.tc }}">{{ cc.title }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:#CDD8EC;font-variant-numeric:tabular-nums">{{ cc.big }}</span></div>
+<div style="margin-top:8px">
+<sc-for list="{{ cc.rows }}" as="r" hint-placeholder-count="4">
+<div style="display:flex;justify-content:space-between;gap:12px;padding:4px 0;border-bottom:1px solid #131C2C"><span style="font-size:13px;color:#8A99B8">{{ r.k }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:{{ r.c }};font-variant-numeric:tabular-nums;white-space:nowrap">{{ r.v }}</span></div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isConfig }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Configuration" style="flex:1;min-height:0;overflow:auto;padding:16px">
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Config set: Default ▾</button>
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Manage…</button>
+<input value="{{ cfgSearch }}" onChange="{{ setCfgSearch }}" placeholder="Search configuration — e.g. chilled, power charges, boss" style="flex:1;min-width:200px;height:34px;background:#0B1420;border:1px solid #1A2438;border-radius:5px;box-shadow:inset 0 1px 2px rgba(5,9,15,.9);color:#E8ECF4;font-family:'IBM Plex Sans',sans-serif;font-size:13px;padding:0 12px;outline:none"></input>
+<button onClick="{{ toggleCfgShowAll }}" style="display:flex;align-items:center;gap:8px;border:0;background:transparent;cursor:pointer;padding:0"><span style="font-size:13px;color:#8A99B8">{{ cfgShowLabel }}</span><i style="width:36px;height:20px;border-radius:10px;background:{{ cfgShowTrack }};position:relative;display:block;transition:background 120ms"><i style="position:absolute;top:2px;left:{{ cfgShowKnobX }}px;width:16px;height:16px;border-radius:50%;background:#E8ECF4;display:block;transition:left 120ms"></i></i></button>
+</div>
+<div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px">
+<sc-for list="{{ cfgSections }}" as="cs" hint-placeholder-count="4">
+<div style="background:#101828;border:1px solid #1A2438;border-radius:5px;box-shadow:inset 0 1px 0 rgba(155,227,255,.09);padding:6px 14px 8px;align-self:start">
+<div style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8A99B8;padding:8px 0">{{ cs.title }}</div>
+<sc-for list="{{ cs.rows }}" as="r" hint-placeholder-count="5">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:38px;border-top:1px solid #131C2C">
+<span style="font-size:13px;color:{{ r.kc }};text-wrap:pretty">{{ r.k }}</span>
+<sc-if value="{{ r.isCheck }}" hint-placeholder-val="{{ false }}"><button onClick="{{ r.flip }}" style="width:20px;height:20px;border-radius:3px;border:1px solid {{ r.bc }};background:{{ r.bg }};color:#08101C;cursor:pointer;font-size:13px;line-height:1;display:grid;place-items:center;font-weight:700;flex:none">{{ r.mark }}</button></sc-if>
+<sc-if value="{{ r.isVal }}" hint-placeholder-val="{{ true }}"><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#E8ECF4;font-variant-numeric:tabular-nums;flex:none">{{ r.v }}</span></sc-if>
+<sc-if value="{{ r.isNum }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:2px;flex:none"><button onClick="{{ r.dec }}" style="width:24px;height:24px;border:1px solid #1A2438;border-radius:3px;background:transparent;color:#8A99B8;cursor:pointer;font-size:12px">−</button><span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#E8ECF4;min-width:44px;text-align:center;font-variant-numeric:tabular-nums">{{ r.v }}</span><button onClick="{{ r.inc }}" style="width:24px;height:24px;border:1px solid #1A2438;border-radius:3px;background:transparent;color:#8A99B8;cursor:pointer;font-size:12px">+</button></span></sc-if>
+<sc-if value="{{ r.isSelect }}" hint-placeholder-val="{{ false }}"><button style="height:28px;padding:0 10px;border-radius:5px;border:1px solid #1A2438;background:#0B1420;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer;flex:none">{{ r.v }} ▾</button></sc-if>
+</div>
+</sc-for>
+</div>
+</sc-for>
+<div style="background:#101828;border:1px solid #1A2438;border-radius:5px;box-shadow:inset 0 1px 0 rgba(155,227,255,.09);padding:6px 14px 14px;align-self:start">
+<div style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8A99B8;padding:8px 0">Custom modifiers</div>
+<div style="display:flex;gap:8px;align-items:center;padding:2px 0 10px;border-top:1px solid #131C2C">
+<button style="height:30px;padding:0 10px;border-radius:5px;border:1px solid #1A2438;background:#0B1420;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer;margin-top:10px">Add mod group</button>
+<span style="font-size:13px;color:#5B6B8A;margin-top:10px">Default · enabled</span>
+</div>
+<textarea placeholder="One modifier per line — e.g. +1 to maximum Frenzy Charges" style="width:100%;height:96px;resize:none;background:#0B1420;border:1px solid #1A2438;border-radius:5px;box-shadow:inset 0 1px 2px rgba(5,9,15,.9);color:#E8ECF4;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;padding:10px 12px;outline:none;user-select:text"></textarea>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isCompare }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Compare" style="flex:1;min-height:0;overflow:auto;padding:16px">
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+<span style="font-size:13px;color:#8A99B8">Compare with</span>
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Imported build (variant) ▾</button>
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Import…</button>
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#8A99B8;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Re-import current</button>
+<button style="height:34px;padding:0 12px;border-radius:5px;border:1px solid rgba(255,77,109,.4);background:transparent;color:#FF7D94;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Remove</button>
+<div style="flex:1"></div>
+</div>
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+<button style="height:30px;padding:0 10px;border-radius:5px;border:1px solid #1A2438;background:#0B1420;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Tree set: Default ▾</button>
+<button style="height:30px;padding:0 10px;border-radius:5px;border:1px solid #1A2438;background:#0B1420;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Skill set: Default ▾</button>
+<button style="height:30px;padding:0 10px;border-radius:5px;border:1px solid #1A2438;background:#0B1420;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Item set: Default ▾</button>
+<button style="height:30px;padding:0 10px;border-radius:5px;border:1px solid #1A2438;background:#0B1420;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Config set: Default ▾</button>
+<button style="height:30px;padding:0 10px;border-radius:5px;border:1px solid #1A2438;background:#0B1420;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Skill: Winter Orb ▾</button>
+<button style="height:30px;padding:0 10px;border-radius:5px;border:1px solid #1A2438;background:#0B1420;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">1 Hit ▾</button>
+</div>
+<div style="display:flex;gap:4px;margin-top:12px">
+<sc-for list="{{ cmpTabs }}" as="ct" hint-placeholder-count="3">
+<button onClick="{{ ct.pick }}" style="height:30px;padding:0 14px;border-radius:3px;border:1px solid {{ ct.bc }};background:{{ ct.bg }};color:{{ ct.fg }};font-size:13px;font-weight:600;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">{{ ct.label }}</button>
+</sc-for>
+</div>
+<sc-if value="{{ cmpSummary }}" hint-placeholder-val="{{ true }}">
+<div style="margin-top:12px;background:#101828;border:1px solid #1A2438;border-radius:5px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(155,227,255,.09)">
+<div style="display:grid;grid-template-columns:1fr 130px 130px 170px;gap:8px;padding:10px 14px;border-bottom:1px solid #1A2438">
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5B6B8A">Stat</span>
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#43D6A3;text-align:right">This build</span>
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#C88FFF;text-align:right">Variant</span>
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5B6B8A;text-align:right">Difference</span>
+</div>
+<sc-for list="{{ compareRows }}" as="r" hint-placeholder-count="8">
+<div style="display:grid;grid-template-columns:1fr 130px 130px 170px;gap:8px;padding:8px 14px;border-bottom:1px solid #131C2C;align-items:baseline">
+<span style="font-size:13px;color:#8A99B8">{{ r.k }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#E8ECF4;text-align:right;font-variant-numeric:tabular-nums">{{ r.a }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#E8ECF4;text-align:right;font-variant-numeric:tabular-nums">{{ r.b }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:{{ r.dc }};text-align:right;font-variant-numeric:tabular-nums">{{ r.d }}</span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top:12px;background:#101828;border:1px solid #1A2438;border-radius:5px;padding:12px 14px;box-shadow:inset 0 1px 0 rgba(155,227,255,.09)">
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8A99B8">Compare power report</span>
+<button style="height:30px;padding:0 10px;border-radius:5px;border:1px solid #1A2438;background:#0B1420;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Metric: — select — ▾</button>
+<span style="font-size:13px;color:#5B6B8A">Tree · Items · Skill gems · Support gems · Config</span>
+</div>
+<div style="font-size:13px;color:#5B6B8A;margin-top:8px">Select a metric to generate the power report.</div>
+</div>
+</sc-if>
+<sc-if value="{{ cmpItemsOn }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:12px;background:#101828;border:1px solid #1A2438;border-radius:5px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(155,227,255,.09)">
+<div style="display:grid;grid-template-columns:96px 1fr 100px 1fr;gap:8px;padding:10px 14px;border-bottom:1px solid #1A2438">
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5B6B8A">Slot</span>
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#43D6A3">This build</span>
+<span></span>
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#C88FFF">Variant</span>
+</div>
+<sc-for list="{{ cmpItemRows }}" as="r" hint-placeholder-count="8">
+<div style="display:grid;grid-template-columns:96px 1fr 100px 1fr;gap:8px;padding:8px 14px;border-bottom:1px solid #131C2C;align-items:baseline">
+<span style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#5B6B8A">{{ r.slot }}</span>
+<span style="font-size:13px;color:{{ r.ac }};min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.a }}</span>
+<span style="font-size:11px;color:{{ r.tagc }}">{{ r.tag }}</span>
+<span style="font-size:13px;color:{{ r.bc }};min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.b }}</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ cmpConfigOn }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:12px;background:#101828;border:1px solid #1A2438;border-radius:5px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(155,227,255,.09)">
+<div style="display:grid;grid-template-columns:1fr 200px 200px;gap:8px;padding:10px 14px;border-bottom:1px solid #1A2438">
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5B6B8A">Setting</span>
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#43D6A3;text-align:right">This build</span>
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#C88FFF;text-align:right">Variant</span>
+</div>
+<sc-for list="{{ cmpCfgRows }}" as="r" hint-placeholder-count="8">
+<div style="display:grid;grid-template-columns:1fr 200px 200px;gap:8px;padding:8px 14px;border-bottom:1px solid #131C2C;align-items:baseline">
+<span style="font-size:13px;color:#8A99B8">{{ r.k }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#E8ECF4;text-align:right;font-variant-numeric:tabular-nums">{{ r.a }}</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#E8ECF4;text-align:right;font-variant-numeric:tabular-nums">{{ r.b }}</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<div style="margin-top:12px;font-size:13px;color:#5B6B8A">Tree diff overlays in the Tree tab when compare is on: green = only in variant, red = only here.</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isNotes }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Notes" style="flex:1;min-height:0;display:flex;flex-direction:column;padding:16px;gap:10px">
+<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+<span style="font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#5B6B8A;margin-right:4px">Colour codes</span>
+<sc-for list="{{ noteChips }}" as="nc" hint-placeholder-count="6">
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:{{ nc.c }};border:1px solid #1A2438;border-radius:3px;padding:3px 8px;background:#0B1420">{{ nc.label }}</span>
+</sc-for>
+<div style="flex:1"></div>
+<div style="display:flex;border:1px solid #1A2438;border-radius:5px;overflow:hidden">
+<sc-for list="{{ noteModes }}" as="nm" hint-placeholder-count="2">
+<button onClick="{{ nm.pick }}" style="height:30px;padding:0 14px;border:0;background:{{ nm.bg }};color:{{ nm.fg }};font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">{{ nm.label }}</button>
+</sc-for>
+</div>
+</div>
+<sc-if value="{{ notesViewing }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;min-height:0;overflow:auto;background:#0B1420;border:1px solid #1A2438;border-radius:5px;box-shadow:inset 0 1px 2px rgba(5,9,15,.9);font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;padding:14px;white-space:pre-wrap;user-select:text">{{ notesView }}</div>
+</sc-if>
+<sc-if value="{{ notesEditing }}" hint-placeholder-val="{{ false }}">
+<textarea value="{{ notes }}" onChange="{{ setNotes }}" style="flex:1;resize:none;background:#0B1420;border:1px solid #1A2438;border-radius:5px;box-shadow:inset 0 1px 2px rgba(5,9,15,.9);color:#E8ECF4;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;padding:14px;outline:none;user-select:text"></textarea>
+</sc-if>
+<div style="font-size:13px;color:#5B6B8A">^ followed by a hex code or 0–9 sets colour, like desktop PoB.</div>
+</div>
+</sc-if>
+</main>
+</div>
+</sc-if>
+
+<sc-if value="{{ dialogImport }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Import dialog" onClick="{{ closeDialog }}" style="position:fixed;inset:0;z-index:100;background:rgba(5,9,15,.86);display:flex;align-items:center;justify-content:center">
+<div onClick="{{ stopClick }}" style="width:600px;max-width:92vw;background:#101828;border:1px solid #26334D;border-radius:8px;box-shadow:0 -18px 40px rgba(3,6,11,.8);padding:20px">
+<div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;color:#E8ECF4">Import build</div>
+<div style="font-size:13px;color:#8A99B8;margin-top:6px;text-wrap:pretty">Paste a PoB share code or raw XML. Codes decode on this device — no signal needed.</div>
+<textarea value="{{ importText }}" onChange="{{ setImportText }}" placeholder="eJyzKcnILFbILFZIzs8rSc0rsVUqSy0qzszP01Uy..." style="width:100%;height:150px;resize:none;margin-top:12px;background:#0B1420;border:1px solid #1A2438;border-radius:5px;box-shadow:inset 0 1px 2px rgba(5,9,15,.9);color:#E8ECF4;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.5;padding:10px 12px;outline:none;user-select:text"></textarea>
+<sc-if value="{{ importErr }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:13px;color:#FF7D94;margin-top:8px">{{ importErr }}</div>
+</sc-if>
+<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+<button onClick="{{ closeDialog }}" style="height:38px;padding:0 16px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Cancel</button>
+<button onClick="{{ doImport }}" style="height:38px;padding:0 20px;border-radius:5px;border:0;background:#3EC8FF;color:#08101C;font-weight:600;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer" style-hover="background:#7DDAFF">Import</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ dialogSave }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Save dialog" onClick="{{ closeDialog }}" style="position:fixed;inset:0;z-index:100;background:rgba(5,9,15,.86);display:flex;align-items:center;justify-content:center">
+<div onClick="{{ stopClick }}" style="width:460px;max-width:92vw;background:#101828;border:1px solid #26334D;border-radius:8px;box-shadow:0 -18px 40px rgba(3,6,11,.8);padding:20px">
+<div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;color:#E8ECF4">Save build</div>
+<div style="font-size:13px;color:#8A99B8;margin-top:6px">Rename this build, or save a copy to the list.</div>
+<input value="{{ nameDraft }}" onChange="{{ setNameDraft }}" style="width:100%;height:40px;margin-top:12px;background:#0B1420;border:1px solid #1A2438;border-radius:5px;box-shadow:inset 0 1px 2px rgba(5,9,15,.9);color:#E8ECF4;font-family:'IBM Plex Sans',sans-serif;font-size:13px;padding:0 12px;outline:none;user-select:text"></input>
+<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+<button onClick="{{ closeDialog }}" style="height:38px;padding:0 16px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Cancel</button>
+<button onClick="{{ doSaveCopy }}" style="height:38px;padding:0 16px;border-radius:5px;border:1px solid #1A2438;background:#101828;color:#CDD8EC;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer">Save as copy</button>
+<button onClick="{{ doRename }}" style="height:38px;padding:0 20px;border-radius:5px;border:0;background:#3EC8FF;color:#08101C;font-weight:600;font-size:13px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer" style-hover="background:#7DDAFF">Rename</button>
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1194,&quot;height&quot;:834},&quot;uiScale&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0.85,&quot;max&quot;:1.35,&quot;step&quot;:0.05,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Accessibility&quot;},&quot;verboseCalcs&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;}}">
+class Component extends DCLogic {
+  state = {
+    screen: 'build', tab: 'tree', level: 87, sidebarW: 276, sidebarOpen: true,
+    secClosed: {}, groupOn: true, groupIdx: 0, dbSearch: '', dbSel: 3,
+    calcsAdv: null, calcsSearch: '', cfgSearch: '', treeSearch: '', treeTip: false,
+    classOpen: false, klass: 'Witch', asc: 'Occultist', buildSearch: '', sort: 'Name',
+    gemLvls: { Frostbite: 19, 'Arcane Surge': 20, Frostblink: 20, Hextouch: 19 },
+    gemOn: { Frostbite: true, 'Arcane Surge': true, Frostblink: true, Hextouch: true },
+    cfgOn: { blinded: false, chilled: true, ignited: true, bleeding: true, power: true, arcane: true, gainedPower: true, critRecently: true, minionDied: true, hitRecently: true, infusion: true, ehpGain: true, alwaysES: true, onslaught: false, frenzy: false, endurance: false, jewel: false, fullLife: false, fullES: false, burning: false, cursed: false, poisoned: false, frozen: false, shocked: false, intimidated: false, crushed: false, unnerved: false, ash: false, frost: false, chillArea: false, wrath: false, unholy: false, chaotic: false, fortified: false, tailwind: false, adrenaline: false, flask: false, consecrated: false, caustic: false, shatteredRecently: false, blockedRecently: false, warcry: false, maxRes75: false, pvp: false },
+    cfgVals: {}, cfgShowAll: false, cmpTab: 'summary', treeCompare: false, fullDps: true,
+    cfgSel: { bandit: 'Help Alira', major: 'Soul of Solaris', minor: 'Soul of Yugul' },
+    pob: null, dialog: null, importText: '', importErr: '', nameDraft: '', buildName: 'Imported build',
+    eqSel: null, saved: false, notesMode: 'view', extraBuilds: [],
+    notes: "Leveling notes\n\nAct 3: grab Frostbite from Clarissa. Pick up Winter Orb at 28.\nAct 4: respec the two Strength nodes near the start.\n\n^xFF5D78Do not vendor the 5-link before the swap.^7"
+  , ...window.__SCREEN_OVERRIDE };
+  async componentDidMount() { this.applyZoom();
+    try { const mod = this.pobMod = await import('./pob-parse.js');
+      const res = await fetch('uploads/build.xml'); if (!res.ok) return;
+      this.adoptPob(mod.parsePob(await res.text()));
+    } catch (e) { console.warn('PoB XML load failed:', e); }
+  }
+  adoptPob(pob) {
+    const c = pob.config || {};
+    const boolMap = { buffArcaneSurge: 'arcane', conditionBeenHitRecently: 'hitRecently', conditionCritRecently: 'critRecently', conditionEnemyBleeding: 'bleeding', conditionEnemyChilled: 'chilled', conditionEnemyIgnited: 'ignited', conditionEnemyBlinded: 'blinded', conditionGainedPowerChargeRecently: 'gainedPower', conditionMinionsDiedRecently: 'minionDied', infusedChannellingInfusion: 'infusion', usePowerCharges: 'power', useFrenzyCharges: 'frenzy', useEnduranceCharges: 'endurance', conditionOnslaught: 'onslaught', conditionFullLife: 'fullLife', DisableEHPGainOnBlock: 'ehpGain' };
+    const numMap = { BrandsAttachedToEnemy: 'brands', conditionStationary: 'stationary', multiplierNearbyEnemies: 'nearbyEnemies', multiplierNearbyRareOrUniqueEnemies: 'nearbyRare', multiplierWitheredStackCountSelf: 'withered', projectileDistance: 'projDist', enemyLevel: 'enemyLevel', enemyArmour: 'eArmour', enemyEvasion: 'eEvasion', enemyChaosDamage: 'eChaosDmg', enemyChaosResist: 'eChaos', enemyColdDamage: 'eColdDmg', enemyColdPen: 'eColdPen', enemyColdResist: 'eCold', enemyCritChance: 'eCritCh', enemyCritDamage: 'eCritMult', enemyFireDamage: 'eFireDmg', enemyFirePen: 'eFirePen', enemyFireResist: 'eFire', enemyLightningDamage: 'eLightDmg', enemyLightningPen: 'eLightPen', enemyLightningResist: 'eLight', enemyPhysicalDamage: 'eSkillPhys', enemySpeed: 'eAtkTime' };
+    const cfgOn = {}; Object.keys(this.state.cfgOn).forEach(k => { cfgOn[k] = false; });
+    Object.entries(boolMap).forEach(([xn, k]) => { if (c[xn]) cfgOn[k] = true; });
+    const cfgVals = { ...this.state.cfgVals };
+    Object.entries(numMap).forEach(([xn, k]) => { if (typeof c[xn] === 'number') cfgVals[k] = c[xn]; });
+    const bandit = c.bandit || pob.meta.bandit;
+    this.setState({ pob, cfgOn, cfgVals,
+      cfgSel: { bandit: bandit && bandit !== 'None' ? 'Help ' + bandit : 'Kill all', major: 'Soul of ' + (c.pantheonMajorGod || pob.meta.major || '—'), minor: 'Soul of ' + (c.pantheonMinorGod || pob.meta.minor || '—') },
+      klass: pob.meta.className || this.state.klass, asc: pob.meta.asc || this.state.asc,
+      level: pob.meta.level || this.state.level, groupIdx: Math.max(0, (pob.meta.mainSocketGroup || 1) - 1),
+      eqSel: (window.__SCREEN_OVERRIDE.eqSel ?? null), notes: pob.notes || this.state.notes });
+  }
+  componentDidUpdate() { this.applyZoom(); }
+  applyZoom() { document.body.style.zoom = String(this.props.uiScale ?? 1); }
+  renderVals() {
+    const S = this.state, set = p => () => this.setState(p);
+    const adv = S.calcsAdv ?? (this.props.verboseCalcs ?? false);
+    const socket = { R: '#FF5D78', G: '#43D6A3', B: '#4D9BFF', W: '#DFE7F5' };
+    const glow = c => c.replace(')', ',.5)').replace('#', 'rgba(') === c ? c : c + '66';
+    const pips = str => str.split('-').map(ch => ({ c: socket[ch], glow: socket[ch] + '55' }));
+    const rarity = { u: '#C88FFF', r: '#CDD8EC', m: '#4D9BFF', n: '#E8ECF4' };
+    const check = (on, flip) => ({ isCheck: true, flip, on, mark: on ? '✓' : '', bg: on ? '#3EC8FF' : '#0B1420', bc: on ? '#3EC8FF' : '#26334D' });
+    const flipCfg = k => () => this.setState(s => ({ cfgOn: { ...s.cfgOn, [k]: !s.cfgOn[k] } }));
+
+    const P = S.pob, st = P ? P.stats : null;
+    const f0 = n => (n == null || isNaN(n)) ? '—' : Math.round(n).toLocaleString('en-US');
+    const f1 = n => (n == null || isNaN(n)) ? '—' : n.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    const sections = (st ? [
+      { title: 'Offence', rows: [ ['Average Hit', f1(st.AverageHit)], ['Cast Rate', f1(st.Speed) + '/s'], ['Crit Chance', (st.CritChance != null ? st.CritChance.toFixed(2) : '—') + '%'], ['Crit Multiplier', Math.round((st.CritMultiplier || 0) * 100) + '%'], ['Combined DPS', f1(st.CombinedDPS), '#CDD8EC'], ['AoE Radius', f1(st.AreaOfEffectRadiusMetres) + ' m'] ] },
+      { title: 'Attributes', rows: [ ['Strength', f0(st.Str) + ' / ' + f0(st.ReqStr) + ' req', socket.R], ['Dexterity', f0(st.Dex) + ' / ' + f0(st.ReqDex) + ' req', socket.G], ['Intelligence', f0(st.Int) + ' / ' + f0(st.ReqInt) + ' req', socket.B] ] },
+      { title: 'Defence', rows: [ ['Effective Hit Pool', f0(st.TotalEHP), '#CDD8EC'], ['Total Life', f0(st.Life)], ['Energy Shield', f0(st.EnergyShield)], ['Evasion', f0(st.Evasion)], ['Armour', f0(st.Armour)], ['Phys. Reduction', Math.round(st.PhysicalDamageReduction || 0) + '%'], ['Block / Spell Block', Math.round(st.EffectiveBlockChance || 0) + '% / ' + Math.round(st.EffectiveSpellBlockChance || 0) + '%'] ] },
+      { title: 'Mana', rows: [ ['Total Mana', f0(st.Mana)], ['Unreserved', f0(st.ManaUnreserved), (st.ManaUnreserved || 0) < 0 ? '#FF7D94' : '#E8ECF4'], ['Mana Regen', f0(st.ManaRegenRecovery)] ] },
+      { title: 'Charges', rows: [ ['Power', f0(st.PowerCharges) + ' / ' + f0(st.PowerChargesMax), socket.B], ['Frenzy', f0(st.FrenzyCharges) + ' / ' + f0(st.FrenzyChargesMax), socket.G], ['Endurance', f0(st.EnduranceCharges) + ' / ' + f0(st.EnduranceChargesMax), socket.R] ] },
+      { title: 'Resistances', rows: [ ['Fire', Math.round(st.FireResist || 0) + '% (+' + Math.round(st.FireResistOverCap || 0) + ')', socket.R], ['Cold', Math.round(st.ColdResist || 0) + '% (+' + Math.round(st.ColdResistOverCap || 0) + ')', socket.B], ['Lightning', Math.round(st.LightningResist || 0) + '% (+' + Math.round(st.LightningResistOverCap || 0) + ')', socket.W], ['Chaos', Math.round(st.ChaosResist || 0) + '%', (st.ChaosResist || 0) < 0 ? '#FF7D94' : '#C88FFF'] ] }
+    ] : [
+      { title: 'Offence', rows: [ ['Average Hit', '12,884.3'], ['Cast Rate', '6.6/s'], ['Crit Chance', '52.58%'], ['Crit Multiplier', '319%'], ['Combined DPS', '70,541.8', '#CDD8EC'], ['AoE Radius', '2.0 m'] ] },
+      { title: 'Attributes', rows: [ ['Strength', '104 / 98 req', socket.R], ['Dexterity', '133 / 111 req', socket.G], ['Intelligence', '329 / 212 req', socket.B] ] },
+      { title: 'Defence', rows: [ ['Effective Hit Pool', '22,710', '#CDD8EC'], ['Total Life', '2,129'], ['Energy Shield', '1,945'], ['Evasion', '614'], ['Armour', '2,125'], ['Phys. Reduction', '22%'], ['Block / Spell Block', '39% / 75%'] ] },
+      { title: 'Mana', rows: [ ['Total Mana', '1,001'], ['Unreserved', '−11', '#FF7D94'], ['Mana Regen', '159'] ] },
+      { title: 'Charges', rows: [ ['Power', '7 / 7', socket.B], ['Frenzy', '0 / 3', socket.G], ['Endurance', '0 / 3', socket.R] ] },
+      { title: 'Resistances', rows: [ ['Fire', '75% (+78)', socket.R], ['Cold', '75% (+90)', socket.B], ['Lightning', '75% (+68)', socket.W], ['Chaos', '−16%', '#FF7D94'] ] }
+    ]).map(s => ({ title: s.title, open: !S.secClosed[s.title], chev: S.secClosed[s.title] ? '▸' : '▾',
+      toggle: () => this.setState(st => ({ secClosed: { ...st.secClosed, [s.title]: !st.secClosed[s.title] } })),
+      rows: s.rows.map(r => ({ k: r[0], v: r[1], c: r[2] || '#E8ECF4' })) }));
+
+    const tabNames = ['Tree', 'Skills', 'Items', 'Calcs', 'Config', 'Compare', 'Notes'];
+    const tabs = tabNames.map(n => { const on = S.tab === n.toLowerCase(); return { label: n, pick: set({ tab: n.toLowerCase() }), edge: on ? '#3EC8FF' : 'transparent', fg: on ? '#CDD8EC' : '#8A99B8' }; });
+
+    const groupDefs = P ? P.groups.map(g => {
+      const it = P.slots[g.slot] ? P.items[P.slots[g.slot]] : null;
+      const socks = it && it.sockets ? it.sockets.replace(/ /g, '-') : g.gems.map(() => 'B').join('-');
+      const actives = g.gems.filter(x => !x.support).map(x => x.name);
+      return { name: (actives.length ? actives : g.gems.map(x => x.name)).join(', ') + (g.main ? ' (Active)' : ''), pips: socks, slot: g.slot, g };
+    }) : [
+      { name: 'Frostbite, Frostblink', pips: 'B-B-B-B', slot: 'Boots' },
+      { name: 'Winter Orb (Active)', pips: 'B-B-B-G-B', slot: 'Body Armour' },
+      { name: 'Herald of Ice', pips: 'G-B-B-G', slot: 'Gloves' },
+      { name: 'Pact of Lycia, Clarity', pips: 'B-W-B', slot: 'Weapon 1' },
+      { name: 'Flesh and Stone, Skitterbots', pips: 'B-B-B-B', slot: 'Helmet' },
+      { name: 'Shield Charge', pips: 'R-G-G', slot: 'Weapon 2' }
+    ];
+    const gi = Math.max(0, Math.min(S.groupIdx, groupDefs.length - 1)), selG = groupDefs[gi];
+    const gOn = P && selG && selG.g ? selG.g.enabled : S.groupOn;
+    const fDps = P && selG && selG.g ? selG.g.fullDps : S.fullDps;
+    const groups = groupDefs.map((g, i) => { const on = S.groupIdx === i; return { name: g.name, slot: g.slot, pips: pips(g.pips), pick: set({ groupIdx: i }), bc: on ? '#26334D' : '#1A2438', edge: on ? '#3EC8FF' : 'transparent', fg: on ? '#CDD8EC' : '#E8ECF4' }; });
+
+    const pipArr = selG ? (selG.pips || '').split('-') : [];
+    const gems = (P && selG && selG.g ? selG.g.gems.map((g, i) => {
+      const col = socket[pipArr[i]] || socket.B;
+      return { name: g.name, lvl: g.level, q: g.quality, c: col, glow: col + '55',
+        cnt: g.count && g.count !== 'nil' ? g.count : '–',
+        inc: () => { g.level++; this.setState({ pob: P }); },
+        dec: () => { g.level = Math.max(1, g.level - 1); this.setState({ pob: P }); },
+        flip: () => { g.enabled = !g.enabled; this.setState({ pob: P }); },
+        mark: g.enabled ? '✓' : '', boxBg: g.enabled ? '#3EC8FF' : '#0B1420', boxBc: g.enabled ? '#3EC8FF' : '#26334D' };
+    }) : ['Frostbite', 'Arcane Surge', 'Frostblink', 'Hextouch'].map(n => { const on = S.gemOn[n];
+      return { name: n, lvl: S.gemLvls[n], q: 0, c: socket.B, glow: socket.B + '55',
+        inc: () => this.setState(s => ({ gemLvls: { ...s.gemLvls, [n]: s.gemLvls[n] + 1 } })),
+        dec: () => this.setState(s => ({ gemLvls: { ...s.gemLvls, [n]: Math.max(1, s.gemLvls[n] - 1) } })),
+        flip: () => this.setState(s => ({ gemOn: { ...s.gemOn, [n]: !on } })),
+        cnt: (n === 'Frostbite' || n === 'Frostblink') ? '1' : '–',
+        mark: on ? '✓' : '', boxBg: on ? '#3EC8FF' : '#0B1420', boxBc: on ? '#3EC8FF' : '#26334D' }; }));
+
+    const slotOrder = ['Weapon 1', 'Weapon 2', 'Helmet', 'Body Armour', 'Gloves', 'Boots', 'Amulet', 'Ring 1', 'Ring 2', 'Belt', 'Flask 1', 'Flask 2', 'Flask 3', 'Flask 4', 'Flask 5'];
+    const rarKey = r => r === 'UNIQUE' ? 'u' : r === 'RARE' ? 'r' : r === 'MAGIC' ? 'm' : 'n';
+    const equippedDefs = P ? slotOrder.filter(sl => P.slots[sl]).map(sl => {
+      const it = P.items[P.slots[sl]];
+      return [sl === 'Body Armour' ? 'Body' : sl, it.name + (it.base ? ', ' + it.base : ''), rarKey(it.rarity), sl];
+    }).concat(Object.values(P.jewelSockets || {}).map((iid, j) => {
+      const it = P.items[iid]; return it ? ['Jewel ' + (j + 1), it.name + (it.base ? ', ' + it.base : ''), rarKey(it.rarity), 'jewel:' + iid] : null;
+    }).filter(Boolean)) : [
+      ['Weapon 1', 'Foulborn Tulfall, Opal Wand', 'u'], ['Weapon 2', "Malachai's Loop, Harmonic Spirit Shield", 'u'],
+      ['Helmet', 'Willclash, Golden Mask', 'u'], ['Body', 'Victory Sanctuary, Elegant Ringmail', 'r'],
+      ['Gloves', 'Rapture Nails, Samite Gloves', 'r'], ['Boots', "Ralakesh's Impatience, Riveted Boots", 'u'],
+      ['Amulet', 'Bloodsoaked Medallion, Amber Amulet', 'u'], ['Ring 1', 'Brimstone Grip, Amethyst Ring', 'r'],
+      ['Ring 2', 'Le Heup of All, Iron Ring', 'u'], ['Belt', 'Foulborn Auxium, Crystal Belt', 'u'],
+      ['Flask 1', 'Nitrate Divine Life Flask of the Remedy', 'm'], ['Flask 2', "Rumi's Concoction, Granite Flask", 'u'],
+      ['Flask 3', 'Bismuth Flask of the Hare', 'm'], ['Flask 4', "Lavianga's Spirit, Sanctified Mana Flask", 'u'],
+      ['Jewel 1', 'Blight Shine, Crimson Jewel', 'r']
+    ];
+    const equipped = equippedDefs.map((e, i) => { const on = P ? S.eqSel === e[3] : i === 6;
+      return { slot: e[0], name: e[1], c: rarity[e[2]], pick: P ? set({ eqSel: e[3] }) : set({}), edge: on ? '#3EC8FF' : 'transparent', bg: on ? '#131C2E' : 'transparent' }; });
+
+    const dbDefs = [
+      ["Abberath's Hooves", 'Goathide Boots'], ["Abberath's Horn", "Goat's Horn"], ['Abhorrent Interrogation', 'Ambush Mitts'],
+      ['Bloodsoaked Medallion', 'Amber Amulet'], ['Abyssus', 'Ezomyte Burgonet'], ["Admiral's Arrogance", 'Antique Gauntlets'],
+      ['The Adorned', 'Crimson Jewel'], ['Advancing Fortress', 'Gut Ripper'], ['Aegis Aurora', 'Champion Kite Shield'],
+      ['Agnerod East', 'Imperial Staff'], ["Ahkeli's Meadow", 'Ruby Ring'], ['Winterheart', 'Gold Amulet']
+    ].filter(d => !S.dbSearch || (d[0] + ' ' + d[1]).toLowerCase().includes(S.dbSearch.toLowerCase()));
+    const dbItems = dbDefs.map((d, i) => { const on = i === S.dbSel; return { name: d[0], base: d[1], c: '#C88FFF', pick: set({ dbSel: i, eqSel: null }), bg: on ? '#131C2E' : 'transparent' }; });
+
+    const cRow = (k, v, c) => ({ k, v, c: c || '#E8ECF4' });
+    const cards = [
+      { title: 'Skill Hit Damage', big: '35,895.7 DPS', tc: '#CDD8EC', rows: [cRow('Skill Average Hit', '11,801.3'), cRow('Total Increased', '362%'), cRow('Total More', '38%'), adv && cRow('Cold DPS Modifier', '× 1.307', '#4D9BFF'), adv && cRow('Skill Hit Range', '4,289 – 6,420', '#8A99B8')] },
+      { title: 'Attack / Cast Rate', big: '6.6 / s', tc: '#CDD8EC', rows: [cRow('Increased Cast Speed', '65%'), cRow('Cast Time', '0.15 s'), adv && cRow('Hit Rate', '3.04'), adv && cRow('More Cast Speed', '0%', '#8A99B8')] },
+      { title: 'Crits', big: '54.98% × 3.19', tc: '#CDD8EC', rows: [cRow('Crit Chance', '54.98%'), cRow('Crit Multiplier', '× 3.19'), adv && cRow('Increased Crit Chance', '633%'), adv && cRow('Crit Effect Modifier', '× 2.204')] },
+      { title: 'Life', big: '2,337', tc: '#FF5D78', rows: [cRow('Base from Gear', '218'), cRow('Increased from Tree', '64%'), adv && cRow('Reserved', '0 (0%)'), adv && cRow('Recoup', '4%')] },
+      { title: 'Mana', big: '−13 / 990', tc: '#4D9BFF', rows: [cRow('Reserved', '990 (100%)'), cRow('Unreserved', '−13 (−1%)', '#FF7D94'), cRow('Recovery', '158.5 / s'), adv && cRow('Increased from Tree', '25%')] },
+      { title: 'Energy Shield', big: '1,939', tc: '#CDD8EC', rows: [cRow('Total Increased', '179%'), cRow('Recharge Rate', '736 / s'), adv && cRow('Recharge Delay', '2 s'), adv && cRow('Leech Rate', '271.8 / s')] },
+      { title: 'Effective Hit Pool', big: '23,611', tc: '#CDD8EC', rows: [cRow('Mitigated Hits', '2.39'), cRow('Maximum Hit (Phys)', '5,308'), adv && cRow('Maximum Hit (Ele)', '17,553'), adv && cRow('Time Before Death', '1.95 s', '#FF7D94')] },
+      { title: 'Non-Damaging Ailments', big: '', tc: '#CDD8EC', rows: [cRow('Chance to Freeze', '91%', '#4D9BFF'), cRow('Chill Effect', '× 1.4'), adv && cRow('Freeze Duration', '× 1.6'), adv && cRow('Current Shock', '18%', '#DFE7F5')] }
+    ].map(c => ({ ...c, rows: c.rows.filter(Boolean) }))
+     .filter(c => { const q = S.calcsSearch.toLowerCase(); return !q || c.title.toLowerCase().includes(q) || c.rows.some(r => r.k.toLowerCase().includes(q)); });
+
+    const chkR = (key, label, o) => ({ k: label, ...check(!!S.cfgOn[key], flipCfg(key)), rel: !!S.cfgOn[key], ...(o || {}) });
+    const numR = (id, label, def, o) => { const v = S.cfgVals[id] ?? def; return { k: label, isNum: true, v: v.toLocaleString('en-US'), rel: def > 0,
+      dec: () => this.setState(s => ({ cfgVals: { ...s.cfgVals, [id]: Math.max(0, (s.cfgVals[id] ?? def) - 1) } })),
+      inc: () => this.setState(s => ({ cfgVals: { ...s.cfgVals, [id]: (s.cfgVals[id] ?? def) + 1 } })), ...(o || {}) }; };
+    const selR = (label, v, o) => ({ k: label, isSelect: true, v, rel: true, ...(o || {}) });
+    const cfgAll = [
+      { title: 'General', rows: [
+        selR('Resistance penalty', 'Act 10 (−60%)'), selR('Bandit quest', S.cfgSel.bandit),
+        selR('Major god', S.cfgSel.major), selR('Minor god', S.cfgSel.minor),
+        numR('stationary', 'Time spent stationary', 1), chkR('fullLife', 'Are you always on full Life?'),
+        chkR('alwaysES', 'Do you always have Energy Shield?'), chkR('fullES', 'Are you always on full Energy Shield?'),
+        numR('corpseLife', 'Enemy corpse Life', 0), selR('Ailment calculation mode', 'Average'),
+        selR('EHP calc unlucky', 'Average'), chkR('ehpGain', 'Disable EHP gain when hit', { kc: '#CDD8EC' }),
+        selR('Pact calc mode', 'Average'), chkR('jewel', 'Ignore jewel limits') ] },
+      { title: 'Skill options', rows: [
+        numR('brands', '# of Brands attached to enemy', 1), chkR('infusion', 'Is Infusion active?'),
+        numR('virulence', '# of Virulence stacks', 0), numR('momentum', '# of Momentum (if not average)', 0),
+        numR('swiftness', 'Swiftness # of Momentum removed', 0), selR('Stance', 'Blood Stance'),
+        chkR('wrath', 'Enable Wrath aura') ] },
+      { title: 'For effective DPS', rows: [
+        numR('projDist', 'Projectile travel distance', 40), chkR('bleeding', 'Is the enemy bleeding?'),
+        numR('bleedPot', 'Bleed stack potential override', 0), chkR('blinded', 'Is the enemy blinded?'),
+        numR('blindEff', 'Effect of Blind (if not maximum)', 0), chkR('burning', 'Is the enemy burning?'),
+        chkR('ignited', 'Is the enemy ignited?'), numR('ignitePot', 'Ignite stack potential override', 0),
+        chkR('chilled', 'Is the enemy chilled?'), numR('chillSec', 'Seconds of chill on enemy', 0),
+        numR('chillEff', 'Effect of chill (if not maximum)', 0), chkR('frozen', 'Is the enemy frozen?'),
+        numR('freezeSec', 'Seconds of freeze on enemy', 0), chkR('shocked', 'Is the enemy shocked?'),
+        chkR('intimidated', 'Is the enemy intimidated?'), chkR('crushed', 'Is the enemy crushed?'),
+        chkR('unnerved', 'Is the enemy unnerved?'), chkR('ash', 'Is the enemy covered in Ash?'),
+        chkR('frost', 'Is the enemy covered in Frost?'), chkR('chillArea', 'Is the enemy in a chilling area?'),
+        chkR('cursed', 'Is the enemy cursed?'), chkR('poisoned', 'Is the enemy poisoned?'),
+        numR('withered', '# of Withered stacks', 15) ] },
+      { title: 'When in combat', rows: [
+        chkR('power', 'Do you use Power Charges?', { kc: '#CDD8EC' }), numR('powerN', '# of Power Charges (if not maximum)', 0),
+        chkR('frenzy', 'Do you use Frenzy Charges?'), numR('frenzyN', '# of Frenzy Charges (if not maximum)', 0),
+        chkR('endurance', 'Do you use Endurance Charges?'), numR('inspirationN', '# of Inspiration Charges (if not maximum)', 0),
+        selR('Repeat mode', 'Average', { rel: false }), chkR('onslaught', 'Do you have Onslaught?'),
+        chkR('arcane', 'Do you have Arcane Surge?'), chkR('unholy', 'Do you have Unholy Might?'),
+        chkR('chaotic', 'Do you have Chaotic Might?'), chkR('fortified', 'Are you Fortified?'),
+        chkR('tailwind', 'Do you have Tailwind?'), chkR('adrenaline', 'Do you have Adrenaline?'),
+        chkR('flask', 'Do you have a Flask active?'), numR('manaBurn', 'Mana Burn stacks', 0),
+        chkR('consecrated', 'Are you on Consecrated Ground?'), chkR('caustic', 'Are you on Caustic Ground?'),
+        numR('nearbyEnemies', '# of nearby enemies', 1), numR('nearbyRare', '# of nearby rare or unique enemies', 1),
+        chkR('critRecently', 'Have you crit recently?'), numR('channelSec', 'Channelling for # seconds', 0),
+        chkR('minionDied', 'Has a minion died recently?'), chkR('shatteredRecently', 'Have you shattered an enemy recently?'),
+        chkR('hitRecently', 'Have you been hit recently?'), chkR('gainedPower', 'Gained a Power Charge recently?'),
+        chkR('blockedRecently', 'Have you blocked recently?'), chkR('warcry', 'Have you used a Warcry recently?'),
+        numR('warcries', '# of Warcries used recently', 0) ] },
+      { title: 'Map modifiers and player debuffs', rows: [
+        numR('mapMods', '% increased effect of map mods', 0), selR('Map tier', 'Red', { rel: false }),
+        selR('Map prefix 1', 'None', { rel: false }), selR('Map prefix 2', 'None', { rel: false }),
+        selR('Map suffix 1', 'None', { rel: false }), selR('Map suffix 2', 'None', { rel: false }),
+        chkR('pvp', 'PvP damage scaling in effect'),
+        numR('curseAssassin', "Cursed by Assassin's Mark", 0), numR('curseConductivity', 'Cursed by Conductivity', 0),
+        numR('curseDespair', 'Cursed by Despair', 0), numR('curseEleWeak', 'Cursed by Elemental Weakness', 0),
+        numR('curseEnfeeble', 'Cursed by Enfeeble', 0), numR('curseFlammability', 'Cursed by Flammability', 0),
+        numR('curseFrostbite', 'Cursed by Frostbite', 0), numR('cursePoacher', "Cursed by Poacher's Mark", 0),
+        numR('curseProjWeak', 'Cursed by Projectile Weakness', 0), numR('cursePunishment', 'Cursed by Punishment', 0),
+        numR('curseTemporal', 'Cursed by Temporal Chains', 0), numR('curseVuln', 'Cursed by Vulnerability', 0),
+        numR('curseWarlord', "Cursed by Warlord's Mark", 0) ] },
+      { title: 'Enemy stats', rows: [
+        numR('enemyLevel', 'Enemy level', 84), selR('Is the enemy a boss?', 'Guardian / Pinnacle'),
+        selR('Delirious effect', 'None', { rel: false }), numR('enemyPhys', 'Enemy phys. damage reduction', 0),
+        numR('eLight', 'Enemy lightning resistance', 50), numR('eCold', 'Enemy cold resistance', 50),
+        numR('eFire', 'Enemy fire resistance', 50), numR('eChaos', 'Enemy chaos resistance', 30),
+        chkR('maxRes75', 'Enemy max resistance is always 75%'), numR('eBlock', 'Enemy block chance', 0),
+        numR('eEvasion', 'Enemy base evasion', 10143), numR('eArmour', 'Enemy base armour', 61989),
+        selR('Boss skill preset', 'None', { rel: false }), selR('Enemy damage type', 'Average'),
+        numR('eAtkTime', 'Enemy attack / cast time in ms', 700), numR('eCritCh', 'Enemy critical strike chance', 5),
+        numR('eCritMult', 'Enemy critical strike multiplier', 30), numR('eSkillPhys', 'Enemy skill physical damage', 2241),
+        numR('eOverwhelm', 'Enemy skill physical overwhelm', 0), numR('eLightDmg', 'Enemy skill lightning damage', 2241),
+        numR('eLightPen', 'Enemy skill lightning pen', 3), numR('eColdDmg', 'Enemy skill cold damage', 2241),
+        numR('eColdPen', 'Enemy skill cold pen', 3), numR('eFireDmg', 'Enemy skill fire damage', 2241),
+        numR('eFirePen', 'Enemy skill fire pen', 3), numR('eChaosDmg', 'Enemy skill chaos damage', 896) ] }
+    ].map(s => ({ ...s, rows: s.rows.map(r => ({ kc: '#8A99B8', isCheck: false, isVal: false, isSelect: false, isNum: false, rel: false, ...r }))
+        .filter(r => { const q = S.cfgSearch.toLowerCase(); return (S.cfgShowAll || S.cfgSearch || r.rel) && (!q || r.k.toLowerCase().includes(q)); }) }))
+     .filter(s => s.rows.length);
+
+    const dRow = (k, a, b, d, good) => ({ k, a, b, d, dc: good == null ? '#8A99B8' : good ? '#43D6A3' : '#FF7D94' });
+    const compareRows = [
+      dRow('Average Hit', '11,801.3', '238,937.2', '+1924.7%', true), dRow('Cast Rate', '6.60', '7.84', '+18.8%', true),
+      dRow('Crit Chance', '54.98%', '14.16%', '−74.2%', false), dRow('Hit DPS', '29,208.2', '1,874,223.1', '+6316.8%', true),
+      dRow('Total DPS inc. Poison', '29,208.2', '16,532,081.9', '+56500.7%', true), dRow('Effective Hit Pool', '23,611', '227,254', '+862.5%', true),
+      dRow('Total Life', '2,337', '1', '−100.0%', false), dRow('Energy Shield', '1,939', '14,716', '+658.9%', true),
+      dRow('Chaos Resistance', '13%', '9%', '−30.8%', false), dRow('Movement Speed', '+119%', '+262%', '+120.9%', true)
+    ];
+
+    const iRow = (slot, a, ac, b, bc, tag) => ({ slot, a: a || '(empty)', ac: a ? ac : '#5B6B8A', b, bc, tag, tagc: tag === '(missing)' ? '#FF7D94' : '#8A99B8' });
+    const U = '#C88FFF', RR = '#CDD8EC';
+    const cmpItemRows = [
+      iRow('Weapon 1', 'Foulborn Tulfall, Opal Wand', U, 'Woe Branch, Profane Wand', RR, '(different)'),
+      iRow('Weapon 2', "Malachai's Loop, Harmonic Spirit Shield", U, 'Tempest Spell, Titanium Spirit Shield', RR, '(different)'),
+      iRow('W1 swap', '', U, 'Bone Bow', RR, '(missing)'),
+      iRow('Helmet', 'Willclash, Golden Mask', U, "Maelstrom Star, Lich's Circlet", RR, '(different)'),
+      iRow('Body', 'Victory Sanctuary, Elegant Ringmail', RR, 'Grim Coat, Twilight Regalia', RR, '(different)'),
+      iRow('Gloves', 'Rapture Nails, Samite Gloves', RR, "Asenath's Gentle Touch, Silk Gloves", U, '(different)'),
+      iRow('Boots', "Ralakesh's Impatience, Riveted Boots", U, 'Brood Slippers, Warlock Boots', RR, '(different)'),
+      iRow('Amulet', 'Bloodsoaked Medallion, Amber Amulet', U, "Replica Dragonfang's Flight, Onyx Amulet", U, '(different)'),
+      iRow('Ring 1', 'Brimstone Grip, Amethyst Ring', RR, 'Rapture Coil, Unset Ring', RR, '(different)'),
+      iRow('Socket 1', '', U, 'Forbidden Flame, Crimson Jewel', U, '(missing)')
+    ];
+    const cmpCfgRows = [
+      { k: 'Bandit quest', a: 'Help Alira', b: 'Kill all' }, { k: 'Major god', a: 'Soul of Solaris', b: 'Soul of Lunaris' },
+      { k: 'Minor god', a: 'Soul of Yugul', b: 'Soul of Abberath' }, { k: '# of Virulence stacks', a: '—', b: '40' },
+      { k: 'Is Infusion active?', a: '✓', b: '—' }, { k: '# of Withered stacks', a: '—', b: '15' },
+      { k: 'Is the enemy blinded?', a: '—', b: '✓' }, { k: 'Do you use Power Charges?', a: '✓', b: '—' },
+      { k: 'Do you use Frenzy Charges?', a: '—', b: '✓' }, { k: 'Stance', a: 'Blood Stance', b: 'Blood Stance' }
+    ];
+    const buildsDefs = [
+      { name: S.buildName, klass: S.klass + ' · ' + S.asc, skill: 'Winter Orb', level: S.level, updated: 'today' },
+      { name: 'CI Trickster', klass: 'Shadow · Trickster', skill: 'Hexblast', level: 92, updated: '2d ago' },
+      { name: 'Boneshatter Jugg', klass: 'Marauder · Juggernaut', skill: 'Boneshatter', level: 78, updated: '1w ago' },
+      { name: 'RF Chieftain', klass: 'Marauder · Chieftain', skill: 'Righteous Fire', level: 95, updated: '3w ago' },
+      { name: 'League starter — Arc', klass: 'Witch · Elementalist', skill: 'Arc', level: 64, updated: 'Aug 2' }
+    ].concat(S.extraBuilds).filter(b => !S.buildSearch || (b.name + ' ' + b.klass + ' ' + b.skill).toLowerCase().includes(S.buildSearch.toLowerCase()));
+
+    const classNames = ['Duelist', 'Marauder', 'Ranger', 'Scion', 'Shadow', 'Templar', 'Witch'];
+    const ascNames = { Witch: ['Occultist', 'Elementalist', 'Necromancer'], Marauder: ['Juggernaut', 'Berserker', 'Chieftain'], Shadow: ['Assassin', 'Saboteur', 'Trickster'], Duelist: ['Slayer', 'Gladiator', 'Champion'], Ranger: ['Deadeye', 'Raider', 'Pathfinder'], Scion: ['Ascendant'], Templar: ['Inquisitor', 'Hierophant', 'Guardian'] };
+    const mkPick = (name, cur, key) => { const on = name === cur; return { name, pick: () => this.setState(key === 'klass' ? { klass: name, asc: ascNames[name][0], classOpen: key !== 'asc' } : { asc: name, classOpen: false }), bg: on ? '#3EC8FF' : 'transparent', fg: on ? '#08101C' : '#CDD8EC', bc: on ? '#3EC8FF' : '#1A2438' }; };
+
+    const sel = dbDefs[S.dbSel] || dbDefs[0] || ['Bloodsoaked Medallion', 'Amber Amulet'];
+    let selItem = null;
+    if (P && S.eqSel) { const iid = S.eqSel.startsWith('jewel:') ? S.eqSel.slice(6) : P.slots[S.eqSel]; selItem = P.items[iid] || null; }
+    const mainG = P ? (P.groups[(P.meta.mainSocketGroup || 1) - 1] || P.groups[0]) : null;
+    const ptsAvail = S.level - 1 + 22;
+    const pts = P ? P.allocated + ' / ' + ptsAvail : '109 / 122';
+    return {
+      isHome: S.screen === 'home', isBuild: S.screen === 'build',
+      isTree: S.tab === 'tree', isSkills: S.tab === 'skills', isItems: S.tab === 'items',
+      isCalcs: S.tab === 'calcs', isConfig: S.tab === 'config', isCompare: S.tab === 'compare',
+      level: S.level, incLevel: () => this.setState(s => ({ level: Math.min(100, s.level + 1) })), decLevel: () => this.setState(s => ({ level: Math.max(1, s.level - 1) })),
+      goHome: set({ screen: 'home' }), newBuild: set({ screen: 'build' }),
+      sidebarOpen: S.sidebarOpen, sidebarClosed: !S.sidebarOpen, sidebarW: S.sidebarW,
+      collapseSidebar: set({ sidebarOpen: false }), expandSidebar: set({ sidebarOpen: true }),
+      startDrag: e => { e.preventDefault(); const x0 = e.clientX, w0 = S.sidebarW;
+        const mv = ev => this.setState({ sidebarW: Math.min(420, Math.max(200, w0 + ev.clientX - x0)) });
+        const up = () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); };
+        window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); },
+      statSections: sections, tabs, groups, gems, equipped, dbItems, calcCards: cards, cfgSections: cfgAll, compareRows,
+      builds: buildsDefs,
+      sorts: ['Name', 'Class', 'Recent'].map(n => ({ label: n, pick: set({ sort: n }), bg: S.sort === n ? '#1A2438' : '#101828', fg: S.sort === n ? '#CDD8EC' : '#8A99B8' })),
+      buildSearch: S.buildSearch, setBuildSearch: e => this.setState({ buildSearch: e.target.value }),
+      treeSearch: S.treeSearch, setTreeSearch: e => this.setState({ treeSearch: e.target.value }),
+      dbSearch: S.dbSearch, setDbSearch: e => this.setState({ dbSearch: e.target.value }),
+      calcsSearch: S.calcsSearch, setCalcsSearch: e => this.setState({ calcsSearch: e.target.value }),
+      cfgSearch: S.cfgSearch, setCfgSearch: e => this.setState({ cfgSearch: e.target.value }),
+      treeTip: S.treeTip, toggleTreeTip: set({ treeTip: !S.treeTip }),
+      toggleTreeCompare: set({ treeCompare: !S.treeCompare }),
+      treeCmpMark: S.treeCompare ? '✓' : '', treeCmpBg: S.treeCompare ? '#3EC8FF' : '#0B1420', treeCmpBc: S.treeCompare ? '#3EC8FF' : '#26334D',
+      cmpChip: S.treeCompare ? 'Compare: variant overlay' : 'Compare: off',
+      allocChip: (P ? P.allocated + ' / ' + ptsAvail : '109 / 122') + ' allocated', pts,
+      buildName: S.buildName, saveLabel: S.saved ? 'Saved ✓' : 'Save',
+      saveNow: () => { this.setState({ saved: true }); clearTimeout(this._st); this._st = setTimeout(() => this.setState({ saved: false }), 1400); },
+      dialogImport: S.dialog === 'import', dialogSave: S.dialog === 'save',
+      openImport: set({ dialog: 'import', importErr: '' }), openSave: () => this.setState({ dialog: 'save', nameDraft: S.buildName }),
+      closeDialog: set({ dialog: null }), stopClick: e => e.stopPropagation(),
+      importText: S.importText, setImportText: e => this.setState({ importText: e.target.value }), importErr: S.importErr,
+      doImport: async () => { const t = this.state.importText.trim(); if (!t) return;
+        try { const mod = this.pobMod || (this.pobMod = await import('./pob-parse.js'));
+          const xml = t.startsWith('<') ? t : await mod.decodePobCode(t);
+          this.adoptPob(mod.parsePob(xml));
+          this.setState({ dialog: null, importText: '', importErr: '', screen: 'build', buildName: 'Imported build' });
+        } catch (e) { this.setState({ importErr: "That code didn't decode. Copy it again from PoB → Import/Export." }); } },
+      nameDraft: S.nameDraft, setNameDraft: e => this.setState({ nameDraft: e.target.value }),
+      doRename: () => this.setState({ buildName: (S.nameDraft || '').trim() || S.buildName, dialog: null }),
+      doSaveCopy: () => this.setState(s => { const mg = s.pob && s.pob.groups[(s.pob.meta.mainSocketGroup || 1) - 1];
+        const sk = mg ? (mg.gems.filter(g => !g.support)[0] || {}).name || '—' : 'Winter Orb';
+        return { extraBuilds: [...s.extraBuilds, { name: ((s.nameDraft || '').trim() || s.buildName) + ' (copy)', klass: s.klass + ' · ' + s.asc, skill: sk, level: s.level, updated: 'now' }], dialog: null }; }),
+      selGroupName: selG ? selG.name : '', selGroupChip: selG ? selG.slot + ' · ' + (selG.pips || '') : '',
+      mainName: mainG ? mainG.gems.filter(g => !g.support).map(g => g.name).join(', ') : 'Winter Orb',
+      mainSub: mainG ? mainG.slot + ' · ' + mainG.gems.length + ' gems' : 'Channelling · 11 stages',
+      toggleCfgShowAll: () => this.setState({ cfgShowAll: !S.cfgShowAll }),
+      cfgShowTrack: S.cfgShowAll ? '#3EC8FF' : '#26334D', cfgShowKnobX: S.cfgShowAll ? 18 : 2,
+      cfgShowLabel: S.cfgShowAll ? 'Showing every setting' : 'Showing what affects this build',
+      cmpSummary: S.cmpTab === 'summary', cmpItemsOn: S.cmpTab === 'items', cmpConfigOn: S.cmpTab === 'config',
+      cmpTabs: ['Summary', 'Items', 'Config'].map(n => { const on = S.cmpTab === n.toLowerCase(); return { label: n, pick: set({ cmpTab: n.toLowerCase() }), bg: on ? '#1A2438' : 'transparent', fg: on ? '#CDD8EC' : '#8A99B8', bc: on ? '#26334D' : '#1A2438' }; }),
+      cmpItemRows, cmpCfgRows,
+      isNotes: S.tab === 'notes', notes: S.notes, setNotes: e => this.setState({ notes: e.target.value }),
+      notesEditing: S.notesMode === 'edit', notesViewing: S.notesMode !== 'edit',
+      noteModes: ['View', 'Edit'].map(n => { const on = (S.notesMode === 'edit') === (n === 'Edit'); return { label: n, pick: set({ notesMode: n.toLowerCase() }), bg: on ? '#1A2438' : 'transparent', fg: on ? '#CDD8EC' : '#8A99B8' }; }),
+      notesView: (() => { const cmap = { 0: '#5B6B8A', 1: '#FF5D78', 2: '#43D6A3', 3: '#4D9BFF', 4: '#DFE7F5', 5: '#C88FFF', 6: '#3EC8FF', 7: '#E8ECF4', 8: '#8A99B8', 9: '#5B6B8A' };
+        let cur = '#E8ECF4'; const out = [];
+        (S.notes || '').split(/(\^x[0-9A-Fa-f]{6}|\^[0-9])/).forEach((p, i) => {
+          if (/^\^x/i.test(p)) cur = '#' + p.slice(2);
+          else if (/^\^[0-9]$/.test(p)) cur = cmap[p[1]];
+          else if (p) out.push(React.createElement('span', { key: i, style: { color: cur } }, p));
+        });
+        return out.length ? React.createElement(React.Fragment, null, out) : React.createElement('span', { style: { color: '#5B6B8A' } }, 'No notes yet. Tap Edit to write some.'); })(),
+      noteChips: [ { label: 'NORMAL', c: '#E8ECF4' }, { label: 'MAGIC', c: '#4D9BFF' }, { label: 'RARE', c: '#CDD8EC' }, { label: 'UNIQUE', c: '#C88FFF' }, { label: 'STRENGTH', c: '#FF5D78' }, { label: 'DEXTERITY', c: '#43D6A3' }, { label: 'INTELLIGENCE', c: '#4D9BFF' }, { label: 'DEFAULT', c: '#8A99B8' } ],
+      toggleFullDps: P && selG && selG.g ? () => { selG.g.fullDps = !selG.g.fullDps; this.setState({ pob: P }); } : set({ fullDps: !S.fullDps }),
+      fullDpsMark: fDps ? '✓' : '', fullDpsBg: fDps ? '#3EC8FF' : '#0B1420', fullDpsBc: fDps ? '#3EC8FF' : '#26334D',
+      classOpen: S.classOpen, toggleClassPicker: set({ classOpen: !S.classOpen }),
+      klass: S.klass, asc: S.asc,
+      classes: classNames.map(n => mkPick(n, S.klass, 'klass')),
+      ascs: (ascNames[S.klass] || []).map(n => mkPick(n, S.asc, 'asc')),
+      groupTrack: gOn ? '#3EC8FF' : '#26334D', groupKnobX: gOn ? 18 : 2, toggleGroupOn: P && selG && selG.g ? () => { selG.g.enabled = !selG.g.enabled; this.setState({ pob: P }); } : set({ groupOn: !S.groupOn }),
+      advTrack: adv ? '#3EC8FF' : '#26334D', advKnobX: adv ? 18 : 2, toggleAdv: () => this.setState({ calcsAdv: !adv }),
+      calcsHint: adv ? 'Showing every intermediate value, like desktop PoB.' : 'Showing the essentials. Flip the switch for every intermediate value.',
+      selName: selItem ? selItem.name : sel[0], selBase: selItem ? selItem.base : sel[1],
+      selReq: selItem ? (selItem.req || 1) : 49, selCorrupted: selItem ? selItem.corrupted : true,
+      selMods: selItem ? selItem.mods : ['+21 to Strength', '32% increased Global Critical Strike Chance', '+52 to Maximum Life', '+29% to Chaos Resistance', 'Gain 5% of Life per Enemy Killed for 5 seconds']
+    };
+  }
+}
+</script>
+</body>
+</html>
