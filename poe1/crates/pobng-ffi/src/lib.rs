@@ -790,10 +790,19 @@ fn with_async<T: Send + Unpin + 'static>(
     default: T,
     f: impl FnOnce(&mut pob_core::build_state::BuildState) -> T + Send + 'static,
 ) -> Reply<T> {
+    on_engine_async(default, move |slot| slot.as_mut().map(f))
+}
+
+/// `with_async` over the engine's whole slot, for jobs that replace the
+/// build rather than read it. `None` from `f` answers with `default`.
+fn on_engine_async<T: Send + Unpin + 'static>(
+    default: T,
+    f: impl FnOnce(&mut Option<pob_core::build_state::BuildState>) -> Option<T> + Send + 'static,
+) -> Reply<T> {
     let shared = Arc::new(Shared { slot: Mutex::new((None, None)) });
     let done = Arc::clone(&shared);
     let job: Job = Box::new(move |slot| {
-        let out = slot.as_mut().map(f);
+        let out = f(slot);
         let waker = {
             let mut s = done.slot.lock().unwrap_or_else(|e| e.into_inner());
             s.0 = Some(out);
@@ -841,6 +850,21 @@ impl Build {
             let _ = rx.recv();
         }
         Self
+    }
+
+    /// `new` without blocking the caller: the host awaits the boot and
+    /// draws a loading screen meanwhile, instead of freezing on launch.
+    #[uniffi::constructor]
+    pub async fn boot(data_dir: String, build_xml: Option<String>) -> Arc<Self> {
+        pob_core::build_state::set_pob_src(data_dir);
+        on_engine_async((), move |slot| {
+            // As in `new`: one engine per process, so drop the old first.
+            *slot = None;
+            *slot = Some(pob_core::build_state::BuildState::new(build_xml.as_deref()));
+            Some(())
+        })
+        .await;
+        Arc::new(Self)
     }
 
     /// A node the canvas was asked to allocate or drop, taken once. The
@@ -2410,5 +2434,51 @@ mod engine_thread_tests {
         engine().tx.send(job).unwrap();
         const QOS_CLASS_USER_INTERACTIVE: u32 = 0x21;
         assert_eq!(rx.recv().unwrap(), QOS_CLASS_USER_INTERACTIVE);
+    }
+}
+
+#[cfg(test)]
+mod boot_tests {
+    use super::*;
+    use std::future::Future;
+    use std::task::{Context, Poll, Wake, Waker};
+
+    struct Unpark(std::thread::Thread);
+    impl Wake for Unpark {
+        fn wake(self: Arc<Self>) {
+            self.0.unpark();
+        }
+    }
+
+    fn block_on<F: Future>(f: F) -> F::Output {
+        let mut f = std::pin::pin!(f);
+        let waker = Waker::from(Arc::new(Unpark(std::thread::current())));
+        let mut cx = Context::from_waker(&waker);
+        loop {
+            if let Poll::Ready(v) = f.as_mut().poll(&mut cx) {
+                return v;
+            }
+            std::thread::park();
+        }
+    }
+
+    /// The launch boot is awaited, so the main thread can draw a loading
+    /// screen instead of freezing for the seconds PoB takes to start.
+    #[test]
+    fn boot_loads_the_build_without_blocking_the_caller() {
+        let manifest = env!("CARGO_MANIFEST_DIR");
+        let src = format!("{manifest}/../../PathOfBuilding/src");
+        let xml = std::fs::read_to_string(format!("{manifest}/../pob-engine/tests/fixtures/occultist-100.xml")).unwrap();
+
+        let boot = Build::boot(src, Some(xml));
+        let mut boot = std::pin::pin!(boot);
+        // First poll comes straight back: the boot is queued, not run here.
+        let waker = Waker::from(Arc::new(Unpark(std::thread::current())));
+        assert!(boot.as_mut().poll(&mut Context::from_waker(&waker)).is_pending());
+
+        let build = block_on(boot);
+        assert_eq!(build.engine_error(), None);
+        let info = build.info();
+        assert_eq!((info.level, info.ascendancy.as_str()), (100, "Occultist"));
     }
 }

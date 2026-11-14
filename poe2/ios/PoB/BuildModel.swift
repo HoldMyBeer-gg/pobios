@@ -88,7 +88,9 @@ final class BuildModel: ObservableObject {
     /// the only way out would be deleting the app's data.
     private static let loadingKey = "lastBuildLoading"
 
-    init() {
+    /// Boot the engine off the main thread and reopen the last build. The
+    /// launch screen shows while this runs; PoB takes seconds to start.
+    static func load() async -> BuildModel {
         // PoB's Lua and data ship in the bundle as a folder reference, so the
         // nesting its `require` paths depend on survives.
         let dataDir = Bundle.main.resourceURL?
@@ -116,14 +118,19 @@ final class BuildModel: ObservableObject {
             UserDefaults.standard.set(openPath, forKey: Self.loadingKey)
             UserDefaults.standard.synchronize()
         }
-        build = Build(dataDir: dataDir, buildXml: xml)
+        let build = await Build.boot(dataDir: dataDir, buildXml: xml)
         UserDefaults.standard.removeObject(forKey: Self.loadingKey)
+        return BuildModel(build: build, openPath: openPath, loadedXml: xml != nil, stuckMessage: stuckMessage)
+    }
+
+    private init(build: Build, openPath: String?, loadedXml: Bool, stuckMessage: String?) {
+        self.build = build
         if let openPath { currentURL = URL(fileURLWithPath: openPath) }
         info = build.info()
         powerStats = build.nodePowerStats()
         if let stuckMessage { engineError = stuckMessage }
         // The last build failed to load: forget it, or every launch fails.
-        if xml != nil, build.engineError() != nil {
+        if loadedXml, build.engineError() != nil {
             currentURL = nil
             UserDefaults.standard.removeObject(forKey: Self.lastPathKey)
         }

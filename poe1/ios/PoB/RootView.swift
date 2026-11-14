@@ -19,8 +19,34 @@ enum Tab: String, CaseIterable, Identifiable {
     }
 }
 
+/// The app's first screen: a loading view while PoB boots off the main
+/// thread, then the app.
+struct LaunchView: View {
+    @State private var model: BuildModel?
+
+    var body: some View {
+        if let model {
+            RootView(model: model)
+        } else {
+            ZStack {
+                Tok.ink050.ignoresSafeArea()
+                VStack(spacing: Tok.Space.s4) {
+                    (Text("pob").foregroundStyle(Tok.textPrimary) + Text("ios").foregroundStyle(Tok.cyan500))
+                        .font(.system(size: 44, weight: .heavy))
+                    ProgressView().tint(Tok.cyan500)
+                    Text("Starting Path of Building…")
+                        .font(.subheadline).foregroundStyle(Tok.textSecondary)
+                }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("Starting Path of Building")
+            }
+            .task { model = await BuildModel.load() }
+        }
+    }
+}
+
 struct RootView: View {
-    @StateObject private var model = BuildModel()
+    @ObservedObject var model: BuildModel
     @StateObject private var library = BuildLibrary()
     @ObservedObject private var theme = ThemeManager.shared
     @State private var tab: Tab = .tree

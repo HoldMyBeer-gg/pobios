@@ -17,7 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         windowScene.sizeRestrictions?.minimumSize = CGSize(width: 960, height: 600)
 
         let window = UIWindow(windowScene: windowScene)
-        window.rootViewController = UIHostingController(rootView: RootView())
+        window.rootViewController = UIHostingController(rootView: LaunchView())
         window.overrideUserInterfaceStyle = .dark
         window.makeKeyAndVisible()
         self.window = window
