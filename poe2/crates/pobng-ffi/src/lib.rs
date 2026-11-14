@@ -675,6 +675,23 @@ static TREE: RwLock<Option<Arc<pob_engine::tree::Tree>>> = RwLock::new(None);
 /// records the tap and the host picks it up after the frame.
 static PENDING_TAP: Mutex<Option<u64>> = Mutex::new(None);
 
+/// Raise the calling thread to User-interactive QoS.
+///
+/// The main thread waits on the engine thread (boot, every blocking read).
+/// Left at Default, that wait is a priority inversion: the scheduler may run
+/// lower work ahead of the thread the UI is stuck on.
+#[cfg(target_vendor = "apple")]
+fn run_at_ui_qos() {
+    const QOS_CLASS_USER_INTERACTIVE: u32 = 0x21;
+    unsafe extern "C" {
+        fn pthread_set_qos_class_self_np(qos: u32, relative_priority: std::ffi::c_int) -> std::ffi::c_int;
+    }
+    unsafe { pthread_set_qos_class_self_np(QOS_CLASS_USER_INTERACTIVE, 0) };
+}
+
+#[cfg(not(target_vendor = "apple"))]
+fn run_at_ui_qos() {}
+
 fn engine() -> &'static EngineThread {
     ENGINE.get_or_init(|| {
         let (tx, rx) = mpsc::channel::<Job>();
@@ -686,6 +703,7 @@ fn engine() -> &'static EngineThread {
             .name("pob-engine".into())
             .stack_size(32 << 20)
             .spawn(move || {
+                run_at_ui_qos();
                 let mut state: Option<pob_core::build_state::BuildState> = None;
                 for job in rx {
                     // A panic inside PoB must not take the thread down with
@@ -2429,4 +2447,35 @@ fn compare_rows_of(rows: Vec<pob_engine::tree::CompareRow>) -> Vec<CompareRow> {
             },
         })
         .collect()
+}
+
+#[cfg(all(test, target_vendor = "apple"))]
+mod engine_thread_tests {
+    use super::*;
+
+    unsafe extern "C" {
+        fn pthread_self() -> *mut std::ffi::c_void;
+        fn pthread_get_qos_class_np(
+            thread: *mut std::ffi::c_void,
+            qos: *mut u32,
+            relative_priority: *mut std::ffi::c_int,
+        ) -> std::ffi::c_int;
+    }
+
+    /// The main thread blocks on the engine thread (boot, every `with`
+    /// read). A waiter at User-interactive on a thread at Default is a
+    /// priority inversion, and Xcode's Thread Performance Checker flags it.
+    #[test]
+    fn the_engine_thread_runs_at_the_qos_of_the_ui_that_waits_on_it() {
+        let (tx, rx) = mpsc::sync_channel(1);
+        let job: Job = Box::new(move |_| {
+            let mut qos = 0u32;
+            let mut rel = 0;
+            unsafe { pthread_get_qos_class_np(pthread_self(), &mut qos, &mut rel) };
+            let _ = tx.send(qos);
+        });
+        engine().tx.send(job).unwrap();
+        const QOS_CLASS_USER_INTERACTIVE: u32 = 0x21;
+        assert_eq!(rx.recv().unwrap(), QOS_CLASS_USER_INTERACTIVE);
+    }
 }
